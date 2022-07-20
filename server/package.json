@@ -1,0 +1,25 @@
+{
+  "name": "speedconjugator-server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "nodemon index.js"
+  },
+  "keywords": [],
+  "author": "kennethtran77",
+  "license": "MIT",
+  "description": "Backend for SpeedConjugator",
+  "dependencies": {
+    "body-parser": "^1.20.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "french-verbs": "^4.2.2",
+    "french-verbs-lefff": "^2.2.2",
+    "install": "^0.13.0",
+    "mongoose": "^6.3.3",
+    "nodemon": "^2.0.16",
+    "socket.io": "^4.5.1"
+  }
+}

@@ -1,0 +1,111 @@
+:root {
+    --ellipse-width: 245px;
+    --ellipse-height: 242px;
+    --ellipse-left: 331px;
+    --ellipse-top: 12px;
+
+    --rectangle-width: 465px;
+    --rectangle-height: 128px;
+    --rectangle-left: 41px;
+    --rectangle-top: 142px;
+
+    --triangle-border-left-right: 110px;
+    --triangle-border-bottom: 181.865334px;
+    --triangle-left: 383px;
+    --triangle-top: 180px;
+    --triangle-size: 210px;
+
+    --font-size: 24px;
+    --line-height: 58px;
+    --font-padding-left: 50px;
+
+    --scale: 1.5;
+}
+
+.logo {
+    width: 600px;
+    height: 400px;
+}
+
+#ellipse {
+    position: absolute;
+    width: var(--ellipse-width);
+    height: var(--ellipse-height);
+    left: var(--ellipse-left);
+    top: var(--ellipse-top);
+    border-radius: 50%;
+
+    background: #D9D9D9;
+    transition: 200ms;
+}
+
+#ellipse:hover {
+    transform: scale(1.25);
+}
+
+#rectangle {
+    position: absolute;
+    width: var(--rectangle-width);
+    height: var(--rectangle-height);
+    left: var(--rectangle-left);
+    top: var(--rectangle-top);
+
+    background: #CE82DB;
+    color: #000000;
+    font-weight: 700;
+    font-size: var(--font-size);
+    line-height: var(--line-height);
+    padding-left: var(--font-padding-left);
+    box-sizing: border-box;
+    transition: 200ms;
+}
+
+#rectangle:hover {
+    transform: translateX(20px);
+}
+
+#triangle {
+    position: absolute;
+    width: calc(var(--triangle-size));
+    height: calc(var(--triangle-size));
+    left: calc(var(--triangle-left));
+    top: calc(var(--triangle-top));
+    border-left: calc(var(--triangle-border-left-right)) solid transparent;
+    border-right: calc(var(--triangle-border-left-right)) solid transparent;
+    border-bottom: calc(var(--triangle-border-bottom)) solid #FFDF70;
+    box-sizing: border-box;
+    transition: 200ms;
+}
+
+#triangle:hover {
+    transform: rotate(40deg);
+}
+
+@media only screen and (max-width: 600px) {
+    #ellipse {
+        width: calc(var(--ellipse-width) / var(--scale));
+        height: calc(var(--ellipse-height) / var(--scale));
+        top: calc(var(--ellipse-top) / var(--scale));
+        left: calc(var(--ellipse-left) / var(--scale));
+    }
+
+    #rectangle {
+        width: calc(var(--rectangle-width) / var(--scale));
+        height: calc(var(--rectangle-height) / var(--scale));
+        top: calc(var(--rectangle-top) / var(--scale));
+        left: calc(var(--rectangle-left) / var(--scale));
+        font-size: calc(var(--font-size) / var(--scale));
+        line-height: calc(var(--line-height) / var(--scale));
+        padding-left: calc(var(--font-padding-left) / var(--scale));
+    }
+
+    #triangle {
+        width: calc(var(--triangle-size) / var(--scale));
+        height: calc(var(--triangle-size) / var(--scale));
+        left: calc(var(--triangle-left) / var(--scale));
+        top: calc(var(--triangle-top) / var(--scale));
+        border-left: calc(var(--triangle-border-left-right) / var(--scale)) solid transparent;
+        border-right: calc(var(--triangle-border-left-right) / var(--scale)) solid transparent;
+        border-bottom: calc(var(--triangle-border-bottom) / var(--scale)) solid #FFDF70;
+    }
+}
