@@ -1,0 +1,8 @@
+.title {
+    background-color: var(--main-colour);
+    padding: 10px;
+}
+
+.title h2 {
+    font-weight: normal;
+}

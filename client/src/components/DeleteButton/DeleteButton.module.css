@@ -1,0 +1,33 @@
+.delete-button {
+    display: inline-block;
+    border: none;
+    color: rgb(66, 66, 66);
+    background-color: transparent;
+    border-radius: 50%;
+    text-decoration: none;
+    padding: 1px;
+}
+
+.delete-button:hover {
+    background-color: rgba(255, 255, 255, 0.5);
+    outline: none;
+    cursor: pointer;
+}
+
+.delete-button:active {
+    outline: none;
+}
+
+.disabled {
+    background-color: rgb(82, 82, 82) !important;
+    cursor: not-allowed !important;
+}
+
+.background {
+    color: white;
+    background-color: rgb(209, 0, 0);
+}
+
+.background:hover {
+    background-color: rgb(149, 0, 0);
+}

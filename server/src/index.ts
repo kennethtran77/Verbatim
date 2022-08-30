@@ -1,0 +1,74 @@
+import express, { Express, Request, Response } from 'express';
+import bodyParser from 'body-parser';
+import http from 'http';
+import { Server, Socket } from 'socket.io';
+import cors, { CorsOptions } from 'cors';
+import dotenv from 'dotenv';
+import { useGlobalEvents, useGlobalServices, composeControllers } from './services';
+import { useConjugationRaceEvents, useConjugationRaceServices } from './services/active/conjugation_race';
+import { EventListenerService, useSocketIOEventListener } from './services/global/event_listener';
+import { useSocketIOEventEmitter } from './services/global/event_emitter';
+import useConjugationRaceGame from './controllers/conjugation_race';
+import useGlobalController, { Controller } from './controllers/global';
+
+// boilerplate drivers
+dotenv.config();
+
+const port = 8000 || process.env.PORT;
+const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:3000';
+
+const corsOptions: CorsOptions = {
+    credentials: true,
+    origin: [FRONTEND_URL, 'https://admin.socket.io']
+};
+
+const app: Express = express();
+app.use(bodyParser.json({ limit: "30mb" }));
+app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
+app.use(cors(corsOptions));
+
+const server: http.Server = http.createServer(app);
+
+// create a socket.io server
+const io = new Server(server, {
+    cors: corsOptions
+});
+
+app.get('/', (req: Request, res: Response) => {
+    res.status(200).send("Connected to Verbatim API");
+});
+
+server.listen(port, () => {
+    console.log(`Server running on port ${port}`);
+});
+
+const env = process.env.ENV as 'dev' | 'prod';
+
+// use socket io connection
+const gameNamespace = io.of('/game');
+
+// initialize dependencies here
+const eventEmitter = useSocketIOEventEmitter(gameNamespace);
+const globalServices = useGlobalServices(env, eventEmitter);
+const conjugationRaceServices = useConjugationRaceServices();
+
+// on each client connection, initialize an event handler service
+gameNamespace.on('connection', (socket: Socket) => {
+    globalServices.logger.info(`Player ${socket.id} connected`);
+
+    // initialize the socket io player event listener service
+    const eventListener: EventListenerService = useSocketIOEventListener(gameNamespace, socket);
+
+    // initialize events
+    const globalEvents = useGlobalEvents(eventListener, globalServices);
+    const conjugationRaceEvents = useConjugationRaceEvents(globalServices, conjugationRaceServices);
+
+    // initialize the controllers
+    const gameController: Controller = useGlobalController(globalServices, globalEvents);
+    const conjugationRaceGameController: Controller = useConjugationRaceGame(globalServices, conjugationRaceServices, conjugationRaceEvents);
+
+    composeControllers(eventListener)(
+        gameController,
+        conjugationRaceGameController
+    );
+});

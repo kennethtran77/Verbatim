@@ -12,17 +12,37 @@
 }
 
 .purple {
-    
+    background-color: var(--main-colour);
+}
+
+.purple:hover {
+    background-color: var(--main-colour-alt);
+}
+
+.purple:active {
+    background-color: var(--main-colour-alt2);
+}
+
+.yellow {
+    background-color: var(--contrast-colour);
+}
+
+.yellow:hover {
+    background-color: var(--contrast-colour-alt);
+}
+
+.yellow:active {
+    background-color: var(--contrast-colour-alt2);
 }
 
 .clear:hover {
     color: white;
-    background-color: #CE82DB;
+    background-color: var(--main-colour);
 }
 
 .clear:active {
     color: white;
-    background-color: #c75adb;
+    background-color: var(--main-colour-alt);
 }
 
 .disabled {

@@ -1,3 +1,13 @@
+:root {
+    --main-colour: #CE82DB;
+    --main-colour-alt: #c75adb;
+    --main-colour-alt2: #c03cd7;
+    --secondary-colour: #D9D9D9;
+    --contrast-colour: #FFDF70;
+    --contrast-colour-alt: #ffcf22;
+    --contrast-colour-alt2: #ffc800;
+}
+
 body {
     background-color: #F4F4F4;
     min-width: 320px;
@@ -7,18 +17,59 @@ body {
 
 .center-flex {
     display: flex;
-    align-items: center;
     justify-content: center;
 }
 
 .left-flex {
     display: flex;
-    align-items: center;
     justify-content: flex-start;
 }
 
 .right-flex {
     display: flex;
-    align-items: center;
     justify-content: flex-end;
+}
+
+.right-flex {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.space-between {
+    display: flex;
+    justify-content: space-between;
+}
+
+.v-margin {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.gap {
+    gap: 5px;
+}
+
+.flex {
+    display: flex;
+}
+
+.flex-wrap {
+    flex-wrap: wrap;
+}
+
+.align-items-center {
+    align-items: center;
+}
+
+.inline-block {
+    display: inline-block;
+}
+
+.flex-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.flex-1 {
+    flex: 1;
 }

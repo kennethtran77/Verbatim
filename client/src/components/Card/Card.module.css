@@ -1,0 +1,15 @@
+.card {
+    background-color: white;
+    border-radius: 10px;
+}
+
+.header {
+    background-color: var(--main-colour);
+    padding: 10px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.body {
+    padding: 10px;
+}

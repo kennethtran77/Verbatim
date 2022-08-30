@@ -1,0 +1,41 @@
+input::-ms-reveal,
+input::-ms-clear {
+  display: none;
+}
+
+input:-webkit-autofill {
+    background-color: transparent !important;
+    -webkit-box-shadow: 0 0 0 50px white inset;
+}
+
+.input {
+    display: flex;
+    border: rgb(95, 95, 95) 1px solid;
+    border-radius: 2px;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    width: 100%;
+    background-color: white;
+    box-sizing: border-box;
+}
+
+.input > input {
+    flex-grow: 1;
+    outline: none;
+    border: none;
+    margin: 0;
+    background-color: white;
+    height: 35px;
+    font-size: 16px;
+    box-sizing: border-box;
+    font-family: 'Inter', serif;
+}
+
+.active {
+    outline: none;
+    box-shadow: 0 0 5px var(--main-colour);
+}
+
+.icon:hover {
+    cursor: pointer;
+}
