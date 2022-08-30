@@ -1,5 +1,5 @@
-import { Tense } from '../../../../../client/src/models/tenses';
 import { Subject, Verb } from "../../../models/conjugation_race";
+import { Tense } from "../../../models/tenses";
 
 export interface VerbService {
     generateUniqueVerbs: (amount: number, tenses: Tense[]) => Verb[];

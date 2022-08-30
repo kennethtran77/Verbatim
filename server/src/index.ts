@@ -14,8 +14,9 @@ import useGlobalController, { Controller } from './controllers/global';
 // boilerplate drivers
 dotenv.config();
 
-const port = 8000 || process.env.PORT;
+const PORT = process.env.PORT || 8000;
 const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:3000';
+const env = process.env.ENV as 'dev' | 'prod';
 
 const corsOptions: CorsOptions = {
     credentials: true,
@@ -34,15 +35,19 @@ const io = new Server(server, {
     cors: corsOptions
 });
 
-app.get('/', (req: Request, res: Response) => {
+app.get('/api', (req: Request, res: Response) => {
     res.status(200).send("Connected to Verbatim API");
 });
 
-server.listen(port, () => {
-    console.log(`Server running on port ${port}`);
+// serve static react SPA
+app.use(express.static('build'));
+app.get('*', (req, res) => {
+    res.sendFile('index.html', {root: 'build' });
 });
 
-const env = process.env.ENV as 'dev' | 'prod';
+server.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
 
 // use socket io connection
 const gameNamespace = io.of('/game');

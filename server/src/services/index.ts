@@ -1,4 +1,3 @@
-import { tenses } from '../../../client/src/models/tenses';
 import { Controller } from '../controllers/global';
 import useCreateGameEvent, { CreateGameEvent } from '../events/global/create_game';
 import useGetGameStatusEvent, { GetGameStatusEvent } from '../events/global/get_game_status';
@@ -22,6 +21,7 @@ import usePlayerFactory from './global/player_factory';
 import useTenseStore, { TenseStore } from './global/tense_store';
 import { gameModes } from '../models/game';
 import { EventEmitterService } from './global/event_emitter';
+import { tenses } from '../models/tenses';
 
 export interface GlobalEvents {
     handleJoinGameEvent: JoinGameEvent;

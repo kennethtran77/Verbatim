@@ -1,7 +1,7 @@
 import { GameFactory } from "./game_factory";
 import { GameRepository } from "./game_repository";
 import Response from "../../models/response";
-import { Tense } from "../../../../client/src/models/tenses";
+import { Tense } from "../../models/tenses";
 import { Game, GameMode, Duration, GameState } from "../../models/game";
 import { Player } from "../../models/player";
 import { PlayerFactory } from "./player_factory";

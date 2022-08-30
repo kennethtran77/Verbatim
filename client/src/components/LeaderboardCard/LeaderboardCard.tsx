@@ -1,6 +1,6 @@
 import Card from "../Card/Card";
 import LeaderboardIcon from '@mui/icons-material/Leaderboard';
-import { LeaderboardValue } from "../../api/conjugation_race";
+import { LeaderboardValue } from "../../../../server/src/models/conjugation_race";
 
 export type LeaderboardCardProps = {
     leaderboard: LeaderboardValue[];

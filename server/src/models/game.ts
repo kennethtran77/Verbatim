@@ -1,6 +1,6 @@
-import { Tense } from "../../../client/src/models/tenses";
 import { GameService } from "../services/global/game_service";
 import { LobbyPlayer, Player } from "./player";
+import { Tense } from "./tenses";
 
 export class Game {
     code: string;

@@ -6,9 +6,7 @@ import App from './App';
 
 import { ServiceProvider } from './contexts/services';
 
-export const backendURL = 'http://localhost:8000';
-
-const api: IApi = initApi(backendURL);
+const api: IApi = initApi(window.location.origin);
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 

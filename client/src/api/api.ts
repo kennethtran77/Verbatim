@@ -4,8 +4,7 @@ import io from 'socket.io-client';
 import { Duration, GameConnectionData, GameState } from '../../../server/src/models/game';
 import Response from '../../../server/src/models/response';
 import { Player } from '../../../server/src/models/player';
-import { Verb } from '../../../server/src/models/conjugation_race';
-import { LeaderboardValue } from './conjugation_race';
+import { LeaderboardValue, Verb } from '../../../server/src/models/conjugation_race';
 
 /** Establishes a connection to a Socket.io API */
 const initApi = (baseURL: string): IApi => {

@@ -1,10 +1,5 @@
-import { Verb } from "../../../server/src/models/conjugation_race";
+import { LeaderboardValue, Verb } from "../../../server/src/models/conjugation_race";
 import Response from "../../../server/src/models/response";
-
-export interface LeaderboardValue {
-    playerName: string;
-    score: number;
-}
 
 export interface ConjugationRaceIO {
     /** An event listener that notifies the player that the leaderboard has changed */

@@ -1,10 +1,9 @@
-import { ConjugationRaceGame, Verb } from "../../../models/conjugation_race";
+import { ConjugationRaceGame, LeaderboardValue, Verb } from "../../../models/conjugation_race";
 import { Game } from "../../../models/game";
 import { ConjugationRacePlayer, Player } from "../../../models/player";
 import Response from "../../../models/response";
 import { ConjugationRaceServices } from "../../../services/active/conjugation_race";
 import { GameService } from "../../../services/global/game_service";
-import { LeaderboardValue } from "../../../../../client/src/api/conjugation_race";
 import Heap from 'heap-js';
 
 export type SubmitAnswerEvent = (playerId: string, answer: string) => Response<Verb>;

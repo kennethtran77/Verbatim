@@ -1,6 +1,11 @@
-import { Tense } from "../../../client/src/models/tenses";
 import { Game } from "./game";
 import { ConjugationRacePlayer } from "./player";
+import { Tense } from "./tenses";
+
+export interface LeaderboardValue {
+    playerName: string;
+    score: number;
+}
 
 export class ConjugationRaceGame extends Game {
     /** A list of players sorted by verbs most correctly answered */

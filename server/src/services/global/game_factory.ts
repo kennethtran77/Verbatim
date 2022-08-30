@@ -1,7 +1,7 @@
-import { Tense } from "../../../../client/src/models/tenses";
 import { ConjugationRaceGame } from "../../models/conjugation_race";
 import { GameMode, Duration, Game } from "../../models/game";
 import Response from "../../models/response";
+import { Tense } from "../../models/tenses";
 import { GameCodeGeneratorService } from "../lobby/code_generator";
 
 export type GameFactory = (mode: GameMode, duration: Duration, tenses: Tense[]) => Response<Game>;

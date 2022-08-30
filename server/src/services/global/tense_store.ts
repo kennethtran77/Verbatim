@@ -1,5 +1,5 @@
-import { Tense } from '../../../../client/src/models/tenses';
 import Response from '../../models/response';
+import { Tense } from '../../models/tenses';
 
 export interface TenseStore {
     validateTenses: (tenseValues: string[]) => Response<Tense[]>;
