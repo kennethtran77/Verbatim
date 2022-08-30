@@ -1,1 +1,8 @@
 node_modules
+.env
+.gitignore
+
+build
+server/.gitignore
+server/dist
+.vscode
