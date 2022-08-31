@@ -35,22 +35,20 @@ const io = new Server(server, {
     cors: corsOptions
 });
 
-app.get('/api', (req: Request, res: Response) => {
-    res.status(200).send("Connected to Verbatim API");
-});
-
-// serve static react SPA
-app.use(express.static('build'));
-app.get('*', (req, res) => {
-    res.sendFile('index.html', {root: 'build' });
-});
+// serve static react SPA on production
+if (env === 'prod') {
+    app.use(express.static('build'));
+    app.get('*', (req, res) => {
+        res.sendFile('index.html', {root: 'build' });
+    });
+}
 
 server.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
 
 // use socket io connection
-const gameNamespace = io.of('/game');
+const gameNamespace = io.of('/api');
 
 // initialize dependencies here
 const eventEmitter = useSocketIOEventEmitter(gameNamespace);
@@ -70,7 +68,7 @@ gameNamespace.on('connection', (socket: Socket) => {
 
     // initialize the controllers
     const gameController: Controller = useGlobalController(globalServices, globalEvents);
-    const conjugationRaceGameController: Controller = useConjugationRaceGame(globalServices, conjugationRaceServices, conjugationRaceEvents);
+    const conjugationRaceGameController: Controller = useConjugationRaceGame(conjugationRaceEvents);
 
     composeControllers(eventListener)(
         gameController,
