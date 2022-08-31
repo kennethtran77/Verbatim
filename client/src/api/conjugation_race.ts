@@ -12,4 +12,6 @@ export interface ConjugationRaceIO {
     onVerbsIncorrectChange(handleVerbsIncorrectChange: ((correctAnswer: string, verbsIncorrect: number) => void)): void;
     onGameStart(handleGameStart: ((firstVerb: Verb) => void)): void;
     emitSubmitAnswer: (answer: string) => Promise<Response<Verb>>;
+    /** Unlistens to all ConjugationRaceIO events */
+    unlisten: () => void;
 }

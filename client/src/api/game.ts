@@ -20,6 +20,8 @@ export interface GlobalIO {
     onCounterChange(handleCounterChange: ((newCounterValue: number) => void)): void;
     /** An event listener that notifies the player that the game has been destroyed abruptly */
     onGameDestroy(handleGameDestroy: () => void): void;
+    /** Unlistens to all GlobalIO events */
+    unlisten: () => void;
 }
 
 export interface GameLobbyIO {
@@ -27,6 +29,8 @@ export interface GameLobbyIO {
     emitSetReady: () => void;
     /** An event listener that notifies the player of any ready state changes */
     onPlayerReadyChange(handlePlayerReadyChange: ((playerId: string, newReadyState: boolean) => void)): void;
+    /** Unlistens to all GameLobbyIO events */
+    unlisten: () => void;
 }
 
 export interface GameActiveIO {

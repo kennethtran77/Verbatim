@@ -50,6 +50,12 @@ const GameLobby = ({ gameSettings, gameState, gameCode, playerId, players, setPl
         if (io) {
             io.onPlayerReadyChange((playerId: string) => setPlayerReady(playerId));
         }
+
+        return () => {
+            if (io) {
+                io.unlisten();
+            }
+        }
     }, [io, setPlayerReady]);
 
     const isSelfReady: boolean = players.find(p => p.id === playerId)?.ready as boolean;

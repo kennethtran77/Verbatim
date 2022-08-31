@@ -40,24 +40,36 @@ const ConjugationRaceGame = ({ playerId, players, io, gameState, gameCounter }: 
 
     // listen to game state changes
     useEffect(() => {
-        io.onGameStart((firstVerb: Verb) => setCurrentVerb(firstVerb));
-        io.onLeaderboardChange((newLeaderboard: LeaderboardValue[]) => setLeaderboard(newLeaderboard));
-        io.onVerbsSeenChange((newVerbsSeen: number) => setVerbsSeen(newVerbsSeen));
-        io.onVerbsCorrectChange((newVerbsCorrect: number) => setVerbsCorrect(newVerbsCorrect));
-        io.onVerbsIncorrectChange((correctAnswer: string, newVerbsIncorrect: number) => {
-            setCorrectAnswer(correctAnswer);
-            setVerbsIncorrect(newVerbsIncorrect);
-        });
-    }, []);
+        if (io) {
+            io.onGameStart((firstVerb: Verb) => setCurrentVerb(firstVerb));
+            io.onLeaderboardChange((newLeaderboard: LeaderboardValue[]) => setLeaderboard(newLeaderboard));
+            io.onVerbsSeenChange((newVerbsSeen: number) => setVerbsSeen(newVerbsSeen));
+            io.onVerbsCorrectChange((newVerbsCorrect: number) => setVerbsCorrect(newVerbsCorrect));
+            io.onVerbsIncorrectChange((correctAnswer: string, newVerbsIncorrect: number) => {
+                setCorrectAnswer(correctAnswer);
+                setVerbsIncorrect(newVerbsIncorrect);
+            });
+        }
+
+        return () => {
+            if (io) {
+                io.unlisten();
+            }
+        }
+    }, [io]);
 
     // handle response indicators
     useEffect(() => {
-        handleResponseIndicator('incorrect');
-        setCorrectAnswer(correctAnswer);
+        if (correctAnswer) {
+            handleResponseIndicator('incorrect');
+            setCorrectAnswer(correctAnswer);
+        }
     }, [correctAnswer]);
 
     useEffect(() => {
-        handleResponseIndicator('correct');
+        if (verbsCorrect) {
+            handleResponseIndicator('correct');
+        }
     }, [verbsCorrect]);
 
     // refresh timer
@@ -69,16 +81,19 @@ const ConjugationRaceGame = ({ playerId, players, io, gameState, gameCounter }: 
     }, [gameCounter]);
 
     const handleResponseIndicator = (responseIndicator: '' | 'correct' | 'incorrect') => {
+        // clear the old timeout if it exists
         if (responseIndicatorTimeout) {
             clearTimeout(responseIndicatorTimeout);
             setResponseIndicatorTimeout(null);
         }
 
+        // set a new timeout
         setResponseIndicatorTimeout(setTimeout(() => {
             setResponseIndicator('');
             setCorrectAnswer('');
         }, 2000));
 
+        // set the current indicator
         setResponseIndicator(responseIndicator);
     };
 

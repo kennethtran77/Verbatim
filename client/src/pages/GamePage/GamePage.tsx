@@ -34,6 +34,12 @@ const GamePage = () => {
             gameContext.getIO().getGlobalIO().onCounterChange((newCounterValue: number) => setGameCounter(newCounterValue));
             gameContext.getIO().getGlobalIO().onGameDestroy(() => setGameState('ending'));
         }
+
+        return () => {
+            if (gameContext) {
+                gameContext.getIO().getGlobalIO().unlisten();
+            }
+        }
     }, [gameContext]);
 
     const renderGamePage = () => {
