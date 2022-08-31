@@ -74,6 +74,11 @@ const useSubmitAnswerEvent = (
 
         gameService.emitToGame('game:conjugationRace:leaderboardChange', game.code, newLeaderboard);
 
+        // generate more verbs if the player has seen all generated verbs
+        if (player.verbsSeen >= game.verbList.length) {
+            game.verbList = game.verbList.concat(conjugationRaceServices.verbService.generateUniqueVerbs(100, game.settings.tenses));
+        }
+
         // fetch the next verb
         const nextVerb: Verb = game.verbList[player.verbsSeen - 1];
 

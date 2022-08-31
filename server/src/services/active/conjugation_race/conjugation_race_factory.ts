@@ -13,7 +13,7 @@ const useConjugationRaceGameFactory = (
     return (game) => {
         const leaderboard: ConjugationRacePlayer[] = [];
         // TODO change amount to be dynamic
-        const verbList: Verb[] = verbService.generateUniqueVerbs(200, game.settings.tenses);
+        const verbList: Verb[] = verbService.generateUniqueVerbs(100, game.settings.tenses);
     
         return Object.setPrototypeOf({
             ...game,
