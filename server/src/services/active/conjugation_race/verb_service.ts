@@ -97,7 +97,9 @@ const useVerbService = (): VerbService => {
                 return [];
             }
 
-            const verbs: Verb[] = shuffle(Object.keys(Lefff)).splice(0, amount).map((verb: string) => {
+            const verbList = Object.keys(Lefff);
+
+            const verbs: Verb[] = shuffle(verbList).splice(0, amount).map((verb: string) => {
                 const tense = getRandomTense(tenses);
                 const subject = getRandomSubject(tense);
 
@@ -126,7 +128,6 @@ const useVerbService = (): VerbService => {
                     agreeGender: agree ? subjectMapping[verb.subject].gender : 'M',
                     agreeNumber: agree ? subjectMapping[verb.subject].number : 'S',
                     // use etre for verbs that always take it, or if verb is pronominal
-                    aux: agree || verb.pronominal ? 'ETRE' : 'AVOIR'
                 },
                 verb.pronominal
             );
