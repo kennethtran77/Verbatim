@@ -105,13 +105,17 @@ const useVerbService = (): VerbService => {
                     infinitive: verb,
                     tense,
                     subject,
-                    pronominal: FrenchVerbs.isTransitive(verb) && Math.floor(Math.random() * 2) == 0
+                    // pronominal: FrenchVerbs.isTransitive(verb)
+                    pronominal: false
                 }
             });
 
             return verbs;
         },
         conjugateVerb(verb) {
+            // in passe compose and plus-que-parfait, agree if the auxiliary is etre or pronominal
+            const agree = FrenchVerbs.alwaysAuxEtre(verb.infinitive) || verb.pronominal;
+
             return FrenchVerbs.getConjugation(
                 Lefff,
                 verb.infinitive,
@@ -119,10 +123,10 @@ const useVerbService = (): VerbService => {
                 subjectMapping[verb.subject].index,
                 {  // params for passé composé and plus-que-parfait
                     // only agree gender and number if verb is pronominal
-                    agreeGender: verb.pronominal ? subjectMapping[verb.subject].gender : 'M',
-                    agreeNumber: verb.pronominal ? subjectMapping[verb.subject].number : 'S',
+                    agreeGender: agree ? subjectMapping[verb.subject].gender : 'M',
+                    agreeNumber: agree ? subjectMapping[verb.subject].number : 'S',
                     // use etre for verbs that always take it, or if verb is pronominal
-                    aux: FrenchVerbs.alwaysAuxEtre(verb.infinitive) || verb.pronominal ? 'ETRE' : 'AVOIR'
+                    aux: agree || verb.pronominal ? 'ETRE' : 'AVOIR'
                 },
                 verb.pronominal
             );
