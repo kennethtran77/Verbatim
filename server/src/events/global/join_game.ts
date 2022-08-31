@@ -9,7 +9,7 @@ import { GameService } from "../../services/global/game_service";
 export type JoinGameEvent = (playerId: string, gameCode: string) => Response<GameConnectionData>;
 
 const useJoinGameEvent = (
-    eventHandler: EventListenerService,
+    eventListener: EventListenerService,
     generateUsername: UsernameGeneratorService,
     gameService: GameService,
     logger: Logger
@@ -33,8 +33,15 @@ const useJoinGameEvent = (
             }
         }
 
+        if (game.players.size >= game.settings.maxPlayers) {
+            return {
+                success: false,
+                message: "The game is already full."
+            }
+        }
+
         // create a new player object
-        eventHandler.subscribe(game.code);
+        eventListener.subscribe(game.code);
 
         const newPlayerRes: Response<Player> = gameService.createPlayer(playerId, game, generateUsername(), 'lobby');
 
