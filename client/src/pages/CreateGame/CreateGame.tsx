@@ -36,14 +36,14 @@ const CreateGame = () => {
 
     const [modalMessage, setModalMessage] = useState('');
 
-    const [maxPlayers, setMaxPlayers] = useState(30);
+    const [maxPlayers, setMaxPlayers] = useState(20);
     const [gamemode, setGamemode] = useState(gameItems[0]);
     const [gametime, setGametime] = useState<Duration>({ minutes: 1, seconds: 30 });
     const [tenses, setTenses] = useState<Tenses>(tenseNames.reduce((prev: Tenses, curr: TenseValue) => ({ ...prev, [curr]: false, 'PRESENT': true }), {} as Tenses));
 
     const handleGameTimeChange = useCallback((e: ChangeEvent<HTMLInputElement>) => setGametime(prev => ({ ...prev, [e.target.title]: Number(e.target.value) })), []);
 
-    const handleMaxPlayersChange = useCallback((e: ChangeEvent<HTMLInputElement>) => setMaxPlayers(Number(e.target.title)), []);
+    const handleMaxPlayersChange = useCallback((e: ChangeEvent<HTMLInputElement>) => setMaxPlayers(Number(e.target.value)), []);
 
     const handleToggleTense = useCallback((e: ChangeEvent<HTMLInputElement>) => setTenses((prev: Tenses) => {
         const currentTense = e.target.title as TenseValue;
@@ -57,7 +57,7 @@ const CreateGame = () => {
     }), []);
 
     const handleCreateGame = useCallback(async () => {
-        const res: Response<string> = await getApi().createGame(gamemode.value, gametime, Object.keys(tenses).filter(tense => tenses[tense as TenseValue]));
+        const res: Response<string> = await getApi().createGame(gamemode.value, gametime, Object.keys(tenses).filter(tense => tenses[tense as TenseValue]), maxPlayers);
 
         if (!res.success) {
             setModalMessage(res.message);
@@ -65,7 +65,7 @@ const CreateGame = () => {
             const gameCode = res.data;
             navigate(`/game/${gameCode}`);
         }
-    }, [gamemode, gametime, tenses, getApi, navigate]);
+    }, [gamemode, gametime, tenses, getApi, navigate, maxPlayers]);
 
     const labelStyle = { marginTop: '10px', fontWeight: 'bold' };
 
@@ -185,7 +185,7 @@ const CreateGame = () => {
                         />
                     </div>
                 </div>
-                <div className="flex space-between gap">
+                <div className="flex space-between gap" style={{ marginTop: '15px' }}>
                     <Button text="Back" icon={<ArrowBackIcon />} link="/" type='purple' />
                     {/* <Button
                         text="Import"

@@ -3,14 +3,14 @@ import Response from "../../models/response";
 import { GameService } from "../../services/global/game_service";
 import { TenseStore } from "../../services/global/tense_store";
 
-export type CreateGameEvent = (mode: string, duration: Duration, tenses: string[]) => Response<string>;
+export type CreateGameEvent = (mode: string, duration: Duration, tenses: string[], maxPlayers: number) => Response<string>;
 
 const useCreateGameEvent = (
     gameModes: string[],
     tenseStore: TenseStore,
     gameService: GameService
 ): CreateGameEvent => {
-    return (mode, duration, tenses) => {
+    return (mode, duration, tenses, maxPlayers) => {
         // validate input
         if (!gameModes.includes(mode)) {
             return {
@@ -33,6 +33,20 @@ const useCreateGameEvent = (
             return {
                 success: false,
                 message: `The game cannot be longer than 5 minutes.`
+            };
+        }
+        
+        if (maxPlayers < 2) {
+            return {
+                success: false,
+                message: `The game cannot must have at least 2 players.`
+            };
+        }
+        
+        if (maxPlayers > 30) {
+            return {
+                success: false,
+                message: `The game cannot have more than 30 players.`
             };
         }
         

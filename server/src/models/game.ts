@@ -26,6 +26,7 @@ export interface GameSettings {
     mode: string;
     tenses: Tense[];
     duration: Duration;
+    maxPlayers: number;
 }
 
 export interface Duration {

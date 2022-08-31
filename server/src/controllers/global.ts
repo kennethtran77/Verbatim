@@ -19,8 +19,8 @@ const useGlobalController = (services: GlobalServices, events: GlobalEvents): Co
         return events.handleGetGameStatusEvent(gameCode);
     })
 
-    eventListener.listen('game:createGame', (playerId, { mode, duration, tenses }: { mode: string, duration: Duration, tenses: string[] }) => {
-        return events.handleCreateGameEvent(mode, duration, tenses);
+    eventListener.listen('game:createGame', (playerId, { mode, duration, tenses, maxPlayers }: { mode: string, duration: Duration, tenses: string[], maxPlayers: number }) => {
+        return events.handleCreateGameEvent(mode, duration, tenses, maxPlayers);
     });
 
     eventListener.listen('game:joinGame', (playerId, { gameCode }: {gameCode: string }) => {
