@@ -1,10 +1,10 @@
-import express, { Express, Request, Response } from 'express';
+import express, { Express } from 'express';
 import bodyParser from 'body-parser';
 import http from 'http';
 import { Server, Socket } from 'socket.io';
 import cors, { CorsOptions } from 'cors';
 import dotenv from 'dotenv';
-import { useGlobalEvents, useGlobalServices, composeControllers } from './services';
+import { useGlobalEvents, useGlobalServices, initializeControllers } from './services';
 import { useConjugationRaceEvents, useConjugationRaceServices } from './services/active/conjugation_race';
 import { EventListenerService, useSocketIOEventListener } from './services/global/event_listener';
 import { useSocketIOEventEmitter } from './services/global/event_emitter';
@@ -67,11 +67,12 @@ gameNamespace.on('connection', (socket: Socket) => {
     const conjugationRaceEvents = useConjugationRaceEvents(globalServices, conjugationRaceServices);
 
     // initialize the controllers
-    const gameController: Controller = useGlobalController(globalServices, globalEvents);
+    const globalGameController: Controller = useGlobalController(globalServices, globalEvents);
     const conjugationRaceGameController: Controller = useConjugationRaceGame(conjugationRaceEvents);
 
-    composeControllers(eventListener)(
-        gameController,
+    // initialize the controllers
+    initializeControllers(eventListener)(
+        globalGameController,
         conjugationRaceGameController
     );
 });

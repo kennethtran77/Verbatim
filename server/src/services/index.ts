@@ -77,6 +77,14 @@ export const useGlobalServices = (env: 'prod' | 'dev', eventEmitter: EventEmitte
 };
 
 /** Takes in an event listener service and a set of controllers and composes them from left to right */
-export const composeControllers = (eventListener: EventListenerService) =>
-    (...controllers: Controller[]) =>
-        controllers.reduce((prevEventListener: EventListenerService, currController: Controller) => currController(prevEventListener), eventListener);
+// export const composeControllers = (eventListener: EventListenerService) =>
+//     (...controllers: Controller[]) =>
+//         controllers.reduce((prevEventListener: EventListenerService, currController: Controller) => currController(prevEventListener), eventListener);
+
+/**
+ * Initializes the given controllers with an event listener service
+ * @param eventListener 
+ */
+export const initializeControllers =
+    (eventListener: EventListenerService) =>
+    (...controllers: Controller[]) => controllers.forEach((controller: Controller) => controller(eventListener));
