@@ -1,11 +1,11 @@
 import PageTitle from "../../../components/PageTitle/PageTitle";
 import VideogameAssetIcon from '@mui/icons-material/VideogameAsset';
-import VerbCard from "../../../components/VerbCard/VerbCard";
+import VerbCard from "./VerbCard";
 import LeaderboardCard from "../../../components/LeaderboardCard/LeaderboardCard";
 import { Player } from "../../../../../server/src/models/player";
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import { ConjugationRaceIO } from "../../../api/conjugation_race";
-import StatsCard from "./StatsCard";
+import StatsCard from "../../../components/StatsCard/StatsCard";
 import { LeaderboardValue, Verb } from "../../../../../server/src/models/conjugation_race";
 import LoadingPage from "../../LoadingPage/LoadingPage";
 import { Duration, GameState } from "../../../../../server/src/models/game";
