@@ -1,15 +1,15 @@
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import Card from '../Card/Card';
+import Card from '../../../components/Card/Card';
 
-import { Subject, Verb } from '../../../../server/src/models/conjugation_race';
+import { Subject, Verb } from '../../../../../server/src/models/conjugation_race';
 
 import FemaleIcon from '@mui/icons-material/Female';
 import MaleIcon from '@mui/icons-material/Male';
 import GroupIcon from '@mui/icons-material/Group';
 import PersonIcon from '@mui/icons-material/Person';
-import Input from '../Input/Input';
+import Input from '../../../components/Input/Input';
 import { ChangeEvent } from 'react';
-import Button from '../Button/Button';
+import Button from '../../../components/Button/Button';
 
 import LoopIcon from '@mui/icons-material/Loop';
 

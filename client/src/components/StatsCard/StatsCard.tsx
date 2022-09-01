@@ -4,7 +4,7 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import PercentIcon from '@mui/icons-material/Percent';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 
-import Card from '../../../components/Card/Card';
+import Card from '../Card/Card';
 
 export type StatsCardProps = {
     seen: number;
