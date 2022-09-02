@@ -127,6 +127,7 @@ const useVerbService = (): VerbService => {
                     // only agree gender and number if verb is pronominal
                     agreeGender: agree ? subjectMapping[verb.subject].gender : 'M',
                     agreeNumber: agree ? subjectMapping[verb.subject].number : 'S',
+                    aux: FrenchVerbs.alwaysAuxEtre(verb.infinitive) ? 'ETRE' : 'AVOIR'
                     // use etre for verbs that always take it, or if verb is pronominal
                 },
                 verb.pronominal
