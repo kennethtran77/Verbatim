@@ -48,6 +48,7 @@ const useSubmitAnswerEvent = (
 
         const currentVerb: Verb = game.verbList[player.verbsSeen - 1];
         player.verbsSeen += 1;
+        gameService.emitToGame('game:conjugationRace:verbsSeenChange', player.id, player.verbsSeen);
 
         // strip verbs of accents
         const correctAnswer = conjugationRaceServices.verbService.conjugateVerb(currentVerb);
