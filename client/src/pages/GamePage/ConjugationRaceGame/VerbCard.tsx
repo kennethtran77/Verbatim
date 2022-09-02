@@ -55,7 +55,8 @@ const VerbCard = ({ verb, value, handleChange, handleSubmit, handleSkip, correct
     return (
         <Card
             icon={<AccessTimeIcon style={{ fontSize: '40px' }} />}
-            header={<h3 style={{ margin: 0 }}>{verb.tense.display}</h3>}
+            header={<h2 style={{ margin: 0 }}>{verb.tense.display}</h2>}
+            headerAlign="center"
             cardStyle={{
                 minWidth: '500px',
                 maxWidth: '700px',

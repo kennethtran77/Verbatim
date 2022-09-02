@@ -8,13 +8,14 @@ export type CardProps = {
     icon?: ReactNode;
     header?: ReactNode;
     body?: ReactNode;
+    headerAlign?: 'left' | 'center' | 'right';
     children?: ReactNode;
 }
 
-const Card = ({ cardStyle = {}, bodyStyle = {}, icon, header, children }: CardProps) => {
+const Card = ({ cardStyle = {}, bodyStyle = {}, icon, header, headerAlign = 'left', children }: CardProps) => {
     return (
         <div className={styles.card} style={cardStyle}>
-            <span className={`left-flex align-items-center gap ${styles.header}`}>{icon} {header}</span>
+            <span className={`${headerAlign}-flex align-items-center gap ${styles.header}`}>{icon} {header}</span>
             <div className={styles.body} style={bodyStyle}>
                 {children}
             </div>
