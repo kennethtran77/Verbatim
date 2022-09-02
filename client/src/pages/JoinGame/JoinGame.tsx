@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, SyntheticEvent, useState } from "react";
 import PageTitle from "../../components/PageTitle/PageTitle";
 import PlayForWorkIcon from '@mui/icons-material/PlayForWork';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -31,11 +31,16 @@ const JoinGame = () => {
 
     const handleCodeChange = useCallback((e: ChangeEvent<HTMLInputElement>) => setGameCode(e.target.value), []);
 
+    const handleSubmitForm = useCallback((e: SyntheticEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        handleEnter();
+    }, [gameCode, getApi]);
+
     return (
         <>
             <Modal active={Boolean(modalMessage.length)} setActive={(state: boolean) => state ? {} : setModalMessage('')}>{modalMessage}</Modal>
             <PageTitle icon={<PlayForWorkIcon />} title="Join Game" />
-            <form>
+            <form onSubmit={handleSubmitForm}>
                 <Input
                     label={<h1 style={{ textAlign: 'center' }}>Game Code</h1>}
                     breakLine={true}
