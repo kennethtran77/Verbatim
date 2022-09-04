@@ -18,8 +18,6 @@
     "express": "^4.18.1",
     "french-verbs": "^4.2.2",
     "french-verbs-lefff": "^2.2.2",
-    "heap-js": "^2.2.0",
-    "mongoose": "^6.3.3",
     "socket.io": "^4.5.1"
   },
   "devDependencies": {
