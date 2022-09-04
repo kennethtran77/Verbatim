@@ -4,7 +4,6 @@ import { ConjugationRacePlayer, Player } from "../../../models/player";
 import Response from "../../../models/response";
 import { ConjugationRaceServices } from "../../../services/active/conjugation_race";
 import { GameService } from "../../../services/global/game_service";
-import Heap from 'heap-js';
 
 export type SubmitAnswerEvent = (playerId: string, answer: string) => Response<Verb>;
 
@@ -12,7 +11,6 @@ const useSubmitAnswerEvent = (
     gameService: GameService,
     conjugationRaceServices: ConjugationRaceServices
 ): SubmitAnswerEvent => {
-    // max heap
     const comparator = (player1: ConjugationRacePlayer, player2: ConjugationRacePlayer) => player2.verbsCorrect - player1.verbsCorrect;
 
     return (playerId, answer) => {
@@ -66,14 +64,8 @@ const useSubmitAnswerEvent = (
         }
 
         // sort the leaderboard
-        Heap.heapify(game.leaderboard, comparator);
-
-        const newLeaderboard: LeaderboardValue[] = game.leaderboard.map(player => ({
-            playerName: player.username,
-            score: player.verbsCorrect
-        }));
-
-        gameService.emitToGame('game:conjugationRace:leaderboardChange', game.code, newLeaderboard);
+        game.leaderboard.sort(comparator);
+        gameService.emitToGame('game:conjugationRace:leaderboardChange', game.code, game.leaderboard);
 
         // generate more verbs if the player has seen all generated verbs
         if (player.verbsSeen >= game.verbList.length) {
