@@ -27,30 +27,53 @@ const LeaderboardCard = ({ leaderboard, playerName }: LeaderboardCardProps) => {
                 gap: 5
             }}
             >
-                { playerRank <= 4 ?
-                    leaderboard.map((player: LeaderboardValue, index: number) => (
-                        <li key={player.playerName} style={player.playerName === playerName ? { fontWeight: 'bold'} : {}} className="">
+                { playerRank <= 3 ?
+                // If the player is within top 3, display them and the last player
+                    <>
+                        {leaderboard.slice(0, 3).map((player: LeaderboardValue, index: number) => (
+                            <li key={player.playerName} style={player.playerName === playerName ? { fontWeight: 'bold'} : {}} className="">
+                                <span className="flex space-between">
+                                    <div>{player.playerName}</div>
+                                    <div>{player.score}</div>
+                                </span>
+                            </li>
+                        ))}
+                        <span>...</span>
+                        <li key={leaderboard[leaderboard.length - 1].playerName} value={leaderboard.length}>
                             <span className="flex space-between">
-                                <div>{player.playerName}</div>
-                                <div>{player.score}</div>
+                                <div>{leaderboard[leaderboard.length - 1].playerName}</div>
+                                <div>{leaderboard[leaderboard.length - 1].score}</div>
                             </span>
                         </li>
-                    ))    
+                    </>
                 :
+                // If the player is rank 4 or lower, display them in between the top 3 and the last player
                     <>
                         {leaderboard.slice(0, 3).map((player: LeaderboardValue) => <li key={player.playerName}>
                             <span className="flex space-between">
-                                {player.playerName}
-                                {player.score}
+                                <div>{player.playerName}</div>
+                                <div>{player.score}</div>
                             </span>
                         </li>)}
                         <span>...</span> 
                         <li key={playerName} value={playerRank} style={{ fontWeight: 'bold' }}>
                             <span className="flex space-between">
-                                {playerName}
-                                {playerScore}
+                                <div>{playerName}</div>
+                                <div>{playerScore}</div>
                             </span>
                         </li>
+                        {playerRank !== leaderboard.length &&
+                            // display the last player if this player is not in last place
+                            <>
+                            <span>...</span>
+                            <li key={leaderboard[leaderboard.length - 1].playerName} value={leaderboard.length}>
+                                <span className="flex space-between">
+                                    <div>{leaderboard[leaderboard.length - 1].playerName}</div>
+                                    <div>{leaderboard[leaderboard.length - 1].score}</div>
+                                </span>
+                            </li>
+                            </>
+                        }
                     </>
                 }
             </ol>
