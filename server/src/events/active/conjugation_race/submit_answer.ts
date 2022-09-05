@@ -65,7 +65,13 @@ const useSubmitAnswerEvent = (
 
         // sort the leaderboard
         game.leaderboard.sort(comparator);
-        gameService.emitToGame('game:conjugationRace:leaderboardChange', game.code, game.leaderboard);
+
+        const newLeaderboard: LeaderboardValue[] = game.leaderboard.map(player => ({
+            playerName: player.username,
+            score: player.verbsCorrect
+        }));
+
+        gameService.emitToGame('game:conjugationRace:leaderboardChange', game.code, newLeaderboard);
 
         // generate more verbs if the player has seen all generated verbs
         if (player.verbsSeen >= game.verbList.length) {
