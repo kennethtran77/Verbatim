@@ -38,13 +38,17 @@ const LeaderboardCard = ({ leaderboard, playerName }: LeaderboardCardProps) => {
                                 </span>
                             </li>
                         ))}
-                        <span>...</span>
-                        <li key={leaderboard[leaderboard.length - 1].playerName} value={leaderboard.length}>
-                            <span className="flex space-between">
-                                <div>{leaderboard[leaderboard.length - 1].playerName}</div>
-                                <div>{leaderboard[leaderboard.length - 1].score}</div>
-                            </span>
-                        </li>
+                        { leaderboard.length > 3 &&
+                            <>
+                                <span>...</span>
+                                <li key={leaderboard[leaderboard.length - 1].playerName} value={leaderboard.length}>
+                                    <span className="flex space-between">
+                                        <div>{leaderboard[leaderboard.length - 1].playerName}</div>
+                                        <div>{leaderboard[leaderboard.length - 1].score}</div>
+                                    </span>
+                                </li>
+                            </>
+                        }
                     </>
                 :
                 // If the player is rank 4 or lower, display them in between the top 3 and the last player

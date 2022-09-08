@@ -16,11 +16,11 @@ export type StatsCardProps = {
 
 const StatsCard = ({ seen, correct, incorrect, highlightCorrect = false, highlightIncorrect = false }: StatsCardProps) => {
     const seenLabel = `${seen} Words Seen`;
-    const correctLabel = `${seen} Words Correctly Answered`;
-    const incorrectLabel = `${seen} Words Incorrectly Answered`;
-    const ratioLabel = `${seen} Correct/Incorrect Ratio`;
+    const correctLabel = `${correct} Words Correctly Answered`;
+    const incorrectLabel = `${incorrect} Words Incorrectly Answered`;
 
-    const ratio: number = correct / incorrect;
+    const ratio: number = Math.round((correct / incorrect) * 100) / 100
+    const ratioLabel = `${ratio} Correct/Incorrect Ratio`;
 
     return (
         <Card
@@ -35,7 +35,7 @@ const StatsCard = ({ seen, correct, incorrect, highlightCorrect = false, highlig
                 <span className="flex gap align-items-center" aria-label={seenLabel} title={seenLabel}><VisibilityIcon /> {seen}</span>
                 <span className="flex gap align-items-center" aria-label={correctLabel} title={correctLabel} style={highlightCorrect ? { color: 'green' } : { color: 'black' }}><CheckCircleIcon /> {correct}</span>
                 <span className="flex gap align-items-center" aria-label={incorrectLabel} title={incorrectLabel} style={highlightIncorrect ? { color: 'red' } : { color: 'black' }}><CancelIcon /> {incorrect}</span>
-                <span className="flex gap align-items-center" aria-label={ratioLabel} title={ratioLabel}><PercentIcon /> {Math.round(ratio * 100) / 100}</span>
+                <span className="flex gap align-items-center" aria-label={ratioLabel} title={ratioLabel}><PercentIcon /> {ratioLabel}</span>
             </div>
         </Card>
     );
