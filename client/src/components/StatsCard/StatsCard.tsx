@@ -35,7 +35,7 @@ const StatsCard = ({ seen, correct, incorrect, highlightCorrect = false, highlig
                 <span className="flex gap align-items-center" aria-label={seenLabel} title={seenLabel}><VisibilityIcon /> {seen}</span>
                 <span className="flex gap align-items-center" aria-label={correctLabel} title={correctLabel} style={highlightCorrect ? { color: 'green' } : { color: 'black' }}><CheckCircleIcon /> {correct}</span>
                 <span className="flex gap align-items-center" aria-label={incorrectLabel} title={incorrectLabel} style={highlightIncorrect ? { color: 'red' } : { color: 'black' }}><CancelIcon /> {incorrect}</span>
-                <span className="flex gap align-items-center" aria-label={ratioLabel} title={ratioLabel}><PercentIcon /> {ratioLabel}</span>
+                <span className="flex gap align-items-center" aria-label={ratioLabel} title={ratioLabel}><PercentIcon /> {ratio}</span>
             </div>
         </Card>
     );
