@@ -1,7 +1,7 @@
 # Verbatim
 Compete with others in real-time French language exercises.
 
-[Live deployment](https://kennethtran-verbatim.herokuapp.com/)
+[Live deployment](https://verbatim.adaptable.app/)
 
 ## Features
 
