@@ -8,7 +8,7 @@
     "dev": "ts-node-dev src/index.ts",
     "clean": "npx rimraf dist -r && npx rimraf build -r",
     "init-frontend": "cd ../client && npm install",
-    "bundle": "npm run clean && npm run build && cd ../client && npm run build && move build ../server"
+    "bundle": "npm run clean && npm run build && cd ../client && npm run build && mv build ../server"
   },
   "keywords": [],
   "author": "kennethtran77",
