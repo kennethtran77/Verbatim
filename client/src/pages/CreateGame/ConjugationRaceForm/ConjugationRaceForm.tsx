@@ -1,7 +1,7 @@
 import { ChangeEvent, CSSProperties } from "react";
 import { Duration } from "../../../../../server/src/models/game";
 import Input from "../../../components/Input/Input";
-import Toggle from "../../../components/Toggle/Toggle";
+import Toggle, { ToggleChangeEvent } from "../../../components/Toggle/Toggle";
 import { TenseValue } from "../../../models/tenses";
 
 export type Tenses = {
@@ -12,7 +12,7 @@ export interface ConjugationRaceFormProps {
     labelStyle?: CSSProperties;
     gametime: Duration;
     handleGameTimeChange: (e: ChangeEvent<HTMLInputElement>) => void;
-    handleToggleTense: (e: ChangeEvent<HTMLInputElement>) => void;
+    handleToggleTense: (e: ToggleChangeEvent) => void;
     tenses: Tenses;
 }
 

@@ -1,4 +1,5 @@
-import { useId } from "react";
+import { MouseEventHandler, useId } from "react";
+import styles from './Toggle.module.css';
 
 type ToggleProps = {
     label: string;
@@ -6,18 +7,32 @@ type ToggleProps = {
     [x: string]: any;
 };
 
-const Toggle = ({ label, checked, ...inputProps }: ToggleProps) => {
+export type ToggleChangeEvent = {
+    title: string
+}
+
+const Toggle = ({ title, label, checked, onChange, ...inputProps }: ToggleProps) => {
     const id = useId();
 
+    const handleClick: MouseEventHandler<HTMLSpanElement> = (e) => {
+        const event: ToggleChangeEvent = {
+            title
+        }
+        onChange(event);
+    }
+
     return (
-        <label className="flex gap align-items-center" htmlFor={id}>
-            <input
-                type="checkbox"
-                checked={checked}
-                { ...inputProps }
-            />
+        <span className="flex gap align-items-center">
+            <label className={styles.switch} htmlFor={id}>
+                <input
+                    type="checkbox"
+                    checked={checked}
+                    readOnly
+                />
+                <span className={styles.slider} onClick={handleClick} />
+            </label>
             {label}
-        </label>
+        </span>
     );
 };
 

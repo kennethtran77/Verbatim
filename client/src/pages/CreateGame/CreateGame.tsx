@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 import { Duration } from "../../../../server/src/models/game";
 import { tenseNames, TenseValue } from "../../models/tenses";
 import ConjugationRaceForm, { Tenses } from "./ConjugationRaceForm/ConjugationRaceForm";
+import { ToggleChangeEvent } from "../../components/Toggle/Toggle";
 
 const gameItems: DropdownElement[] = [
     {
@@ -41,11 +42,12 @@ const CreateGame = () => {
 
     const handleMaxPlayersChange = useCallback((e: ChangeEvent<HTMLInputElement>) => setMaxPlayers(Number(e.target.value)), []);
 
-    const handleToggleTense = useCallback((e: ChangeEvent<HTMLInputElement>) => setTenses((prev: Tenses) => {
-        const currentTense = e.target.title as TenseValue;
+    const handleToggleTense = useCallback((e: ToggleChangeEvent) => setTenses((prev: Tenses) => {
+        const currentTense = e.title as TenseValue;
 
         // do not do anything if the current tense is the only one selected
         if (prev[currentTense] && Object.keys(prev).every((tense) => tense === currentTense || !prev[tense as TenseValue])) {
+            setModalMessage('You must have at least one tense selected.');
             return prev;
         }
 
