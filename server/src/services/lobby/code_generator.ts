@@ -7,7 +7,8 @@ export type GameCodeGeneratorService = () => string;
 
 const useGameCodeGenerator: GameCodeGenerator = (isCodeTaken) => {
     return () => {
-        const codeGenerator = () => (Math.random() + 1).toString(36).substring(7).toUpperCase();
+        const codeLength = 8;
+        const codeGenerator = () => (Math.random() + 1).toString(36).substring(codeLength).toUpperCase();
 
         let code = codeGenerator();
 
