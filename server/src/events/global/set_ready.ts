@@ -32,13 +32,6 @@ const useSetReadyEvent = (
 
         const game: Game = getGameRes.data;
 
-        // if (!game || (game.state !== 'waiting' && game.state !== 'starting')) {
-        //     return {
-        //         success: false,
-        //         message: "Cannot change ready state once game has started."
-        //     }
-        // }
-
         // mark the player as ready
         player.ready = true;
         game.playersReady += 1;
