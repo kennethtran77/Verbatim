@@ -12,6 +12,8 @@ import useConjugationRaceGame from './controllers/conjugation_race';
 import useGlobalController, { EventController } from './controllers/global';
 import { usePSQLDBService } from './services/global/db_service';
 import { Pool } from 'pg';
+import { useExpressRequestHandler } from './services/global/request_handler';
+import useGameRestController from './controllers/game';
 
 // boilerplate drivers
 dotenv.config();
@@ -88,3 +90,11 @@ gameNamespace.on('connection', (socket: Socket) => {
         conjugationRaceGameController
     );
 });
+
+// Set up REST endpoints
+const gameRouter = express.Router();
+app.use('/game', gameRouter);
+const requestHandler = useExpressRequestHandler(gameRouter);
+
+// Register endpoints
+useGameRestController(globalServices.gameDbService)(requestHandler);
