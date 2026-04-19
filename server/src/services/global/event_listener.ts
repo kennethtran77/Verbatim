@@ -1,10 +1,12 @@
 import { Namespace, Socket } from "socket.io";
 import Response from "../../models/response";
 
+export type EventHandler<T> = (playerId: string, data?: any) => void | Response<T>;
+
 /** An event handler service associated with a player */
 export interface EventListenerService {
     /** Listens to an event and data that was emitted by a player */
-    listen: <T>(eventName: string, eventHandler: ((playerId: string, data?: any) => void | Response<T>)) => void;
+    listen: <T>(eventName: string, eventHandler: EventHandler<T>) => void;
     /** Subscribes a player to a game */
     subscribe: (gameCode: string) => void;
     /** Unsubscribes a player from a game */
@@ -13,7 +15,7 @@ export interface EventListenerService {
 
 /** Uses the Socket IO implementation for handling bi-directional events */
 export const useSocketIOEventListener = (io: Namespace, socket: Socket): EventListenerService => ({
-    listen: <T>(eventName: string, eventHandler: (playerId: string, data?: any) => void | Response<T>) => {
+    listen: <T>(eventName: string, eventHandler: EventHandler<T>) => {
         // socket takes a data object and a callback function
         socket.on(eventName, (data: any, sendResponse: (res: Response<T>) => void) => {
             const eventResponse = eventHandler(socket.id, data);
