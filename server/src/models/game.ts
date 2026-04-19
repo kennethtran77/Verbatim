@@ -9,7 +9,11 @@ export class Game {
     players: Set<Player>;
     playersReady: number;
     settings: GameSettings;
+    startTime: Date;
+    endTime: Date;
+    /** Callback functions that are executed on respective game state change */
     onStart: (gameService: GameService) => any;
+    onEnd: (gameService: GameService) => any;
 }
 
 export type GameState = 'waiting' | 'starting' | 'active' | 'ending';

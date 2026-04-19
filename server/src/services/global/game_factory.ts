@@ -2,13 +2,15 @@ import { ConjugationRaceGame } from "../../models/conjugation_race";
 import { GameMode, Duration, Game } from "../../models/game";
 import Response from "../../models/response";
 import { Tense } from "../../models/tenses";
+import { ConjugationRaceGameFactory } from "../active/conjugation_race/conjugation_race_factory";
 import { GameCodeGeneratorService } from "../lobby/code_generator";
+import { GameService } from "./game_service";
 
 export type GameFactory = (mode: GameMode, duration: Duration, tenses: Tense[]) => Response<Game>;
 
 const useGameFactory = (
     generateGameCode: GameCodeGeneratorService,
-    createConjugationRaceGame: (game: Game) => ConjugationRaceGame
+    conjugationGameRaceFactory: ConjugationRaceGameFactory
 ): GameFactory => {
     return (mode, duration, tenses) => {
         const gameCode = generateGameCode();
@@ -24,12 +26,35 @@ const useGameFactory = (
                 duration
             },
             gameStartData: {},
-            onStart: () => {}
+            onStart(gameService: GameService) {
+                gameService.setGameCounter(this, this.settings.duration.minutes * 60 + this.settings.duration.seconds);
+                this.startTime = new Date();
+
+                const timer: NodeJS.Timer = setInterval(() => {
+                    if (this.state !== 'active') {
+                        clearInterval(timer);
+                        return;
+                    }
+
+                    if (this.counter === 1) {
+                        clearInterval(timer);
+                        gameService.setGameState(this, 'ending');
+                        this.onEnd(gameService);
+                        // gameService.removeGame(this);
+                        return;
+                    }
+
+                    gameService.setGameCounter(this, this.counter - 1);
+                }, 1000);
+            },
+            onEnd(gameService: GameService) {
+                this.endTime = new Date();
+            }
         }, Game.prototype);
 
         switch (mode) {
             case 'conjugation-race':
-                newGame = createConjugationRaceGame(newGame);
+                newGame = conjugationGameRaceFactory(newGame);
                 break;
             default:
                 break;

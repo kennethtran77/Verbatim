@@ -20,7 +20,7 @@ const useConjugationRaceGameFactory = (
             leaderboard,
             verbList,
             onStart(gameService: GameService) {
-                gameService.setGameCounter(this, this.settings.duration.minutes * 60 + this.settings.duration.seconds);
+                game.onStart(gameService);
                 gameService.emitToGame('game:conjugationRace:gameStart', game.code, verbList[0]);
 
                 // convert each player to a ConjugationRacePlayer and add them to leaderboard
@@ -33,22 +33,9 @@ const useConjugationRaceGameFactory = (
 
                     leaderboard.push(convertedPlayerRes.data as ConjugationRacePlayer);
                 });
-
-                const timer: NodeJS.Timer = setInterval(() => {
-                    if (this.state !== 'active') {
-                        clearInterval(timer);
-                        return;
-                    }
-
-                    if (this.counter === 1) {
-                        clearInterval(timer);
-                        gameService.setGameState(this, 'ending');
-                        // gameService.removeGame(this);
-                        return;
-                    }
-        
-                    gameService.setGameCounter(this, this.counter - 1);
-                }, 1000);
+            },
+            onEnd(gameService: GameService) {
+                game.onEnd(gameService);
             }
         }, ConjugationRaceGame.prototype);
     }
