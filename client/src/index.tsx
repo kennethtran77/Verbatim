@@ -9,9 +9,8 @@ import App from './App';
 import { ServiceProvider } from './contexts/services';
 
 // initialize dependencies
-const devUrl = `http://localhost:8000/api`;
-const prodUrl = `${window.location.origin}/api`;
-const eventHandler: EventHandler = initSocketIOEventHandler(io(prodUrl));
+const url = process.env.REACT_APP_API_URL ?? `${window.location.origin}/api`;
+const eventHandler: EventHandler = initSocketIOEventHandler(io(url));
 const api: IApi = initApi(eventHandler);
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
