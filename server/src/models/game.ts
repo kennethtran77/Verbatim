@@ -2,6 +2,16 @@ import { GameService } from "../services/global/game_service";
 import { LobbyPlayer, Player } from "./player";
 import { Tense } from "./tenses";
 
+export class GameData {
+    code: string;
+    mode: string;
+    tenses: string[];
+    duration: Duration;
+    maxPlayers: number;
+    startTime: Date;
+    endTime: Date;
+}
+
 export class Game {
     code: string;
     state: GameState;

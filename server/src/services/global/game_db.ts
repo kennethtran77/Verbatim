@@ -1,8 +1,9 @@
-import { Game } from "../../models/game";
+import { Game, GameData } from "../../models/game";
 import { DatabaseService } from "./db_service";
 
 export interface GameDbService {
     saveGameData: (game: Game) => Promise<void>;
+    getGameData: (gameCode: string) => Promise<GameData | null>;
 }
 
 const useGameDbService = (
@@ -31,6 +32,44 @@ const useGameDbService = (
                 throw err;
             }
         },
+        async getGameData(gameCode) {
+            try {
+                // Get game data
+                const result = await dbService.query(
+                    'SELECT * FROM game WHERE code = $1;',
+                    [gameCode]
+                );
+
+                if (result.rows.length === 0) {
+                    return null;
+                }
+                const gameRow = result.rows[0];
+
+                // Get tenses used by the game
+                const tensesResult = await dbService.query(
+                    'SELECT * FROM tense WHERE game_code = $1;',
+                    [gameCode]
+                );
+                let tenses: string[] = tensesResult.rows.map((row: any) => row.tense);
+
+                const gameData: GameData = {
+                    code: gameRow.code,
+                    mode: gameRow.mode,
+                    tenses: tenses,
+                    duration: {
+                        minutes: Math.floor(gameRow.duration / 60),
+                        seconds: gameRow.duration % 60
+                    },
+                    maxPlayers: gameRow.max_players,
+                    startTime: gameRow.start_time,
+                    endTime: gameRow.end_time,
+                };
+                return gameData;
+            } catch (err) {
+                console.error(`Failed to get game ${gameCode}:`, err);
+                throw err;
+            }
+        }
     }
 };
 
