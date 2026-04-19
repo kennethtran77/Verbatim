@@ -9,7 +9,8 @@ export const useConjugationRacePlayerFactory = (): ConjugationRacePlayerFactory 
             ...player,
             verbsSeen: 1,
             verbsCorrect: 0,
-            verbsIncorrect: 0
+            verbsIncorrect: 0,
+            verbResponses: []
         },
         ConjugationRacePlayer.prototype
     );

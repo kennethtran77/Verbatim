@@ -4,10 +4,12 @@ import { ConjugationRacePlayer, Player } from "../../../models/player";
 import { GameService } from "../../global/game_service";
 import { VerbService } from "./verb_service";
 import Response from "../../../models/response";
+import { ConjugationRaceDbService } from "./conjugation_race_db";
 
 export type ConjugationRaceGameFactory = (game: Game) => ConjugationRaceGame;
 
 const useConjugationRaceGameFactory = (
+    dbService: ConjugationRaceDbService,
     verbService: VerbService
 ): ConjugationRaceGameFactory => {
     return (game) => {
@@ -20,7 +22,7 @@ const useConjugationRaceGameFactory = (
             leaderboard,
             verbList,
             onStart(gameService: GameService) {
-                game.onStart(gameService);
+                game.onStart.call(this, gameService);
                 gameService.emitToGame('game:conjugationRace:gameStart', game.code, verbList[0]);
 
                 // convert each player to a ConjugationRacePlayer and add them to leaderboard
@@ -35,7 +37,8 @@ const useConjugationRaceGameFactory = (
                 });
             },
             onEnd(gameService: GameService) {
-                game.onEnd(gameService);
+                game.onEnd.call(this, gameService);
+                dbService.saveGameData(this);
             }
         }, ConjugationRaceGame.prototype);
     }

@@ -10,6 +10,8 @@ import { EventListenerService, useSocketIOEventListener } from './services/globa
 import { useSocketIOEventEmitter } from './services/global/event_emitter';
 import useConjugationRaceGame from './controllers/conjugation_race';
 import useGlobalController, { Controller } from './controllers/global';
+import { usePSQLDBService } from './services/global/db_service';
+import { Pool } from 'pg';
 
 // boilerplate drivers
 dotenv.config();
@@ -47,12 +49,24 @@ server.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
 
+
+// initialize dependencies here
+
 // use socket io connection
 const gameNamespace = io.of('/api');
 
-// initialize dependencies here
+// Use node-postgres for db service
+const pool = new Pool();
+
+pool.on('error', (err, client) => {
+    console.error('Unexpected error on idle client', err)
+    process.exit(-1)
+})
+
+const dbService = usePSQLDBService(pool);
+
 const eventEmitter = useSocketIOEventEmitter(gameNamespace);
-const globalServices = useGlobalServices(env, eventEmitter);
+const globalServices = useGlobalServices(env, eventEmitter, dbService);
 const conjugationRaceServices = useConjugationRaceServices();
 
 // on each client connection, initialize an event handler service

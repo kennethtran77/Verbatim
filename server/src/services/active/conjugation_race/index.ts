@@ -5,7 +5,7 @@ import useSubmitAnswerEvent, { SubmitAnswerEvent } from "../../../events/active/
 import useVerbService, { VerbService } from "./verb_service";
 
 export interface ConjugationRaceServices {
-    verbService: VerbService;
+    getVerbService: () => VerbService;
 }
 
 export interface ConjugationRaceEvents {
@@ -13,7 +13,7 @@ export interface ConjugationRaceEvents {
 }
 
 export const useConjugationRaceServices = (): ConjugationRaceServices => ({
-    verbService: useVerbService()
+    getVerbService: useVerbService
 });
 
 export const useConjugationRaceEvents = (globalServices: GlobalServices, conjugationRaceServices: ConjugationRaceServices): ConjugationRaceEvents => ({

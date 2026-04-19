@@ -22,6 +22,9 @@ import useTenseStore, { TenseStore } from './global/tense_store';
 import { gameModes } from '../models/game';
 import { EventEmitterService } from './global/event_emitter';
 import { tenses } from '../models/tenses';
+import { DatabaseService } from './global/db_service';
+import useConjugationRaceDbService, { ConjugationRaceDbService } from './active/conjugation_race/conjugation_race_db';
+import useGameDbService, { GameDbService } from './global/game_db';
 
 export interface GlobalEvents {
     handleJoinGameEvent: JoinGameEvent;
@@ -51,13 +54,18 @@ export const useGlobalEvents = (eventHandler: EventListenerService, globalServic
     handleSetReadyEvent: useSetReadyEvent(globalServices.gameService)
 });
 
-export const useGlobalServices = (env: 'prod' | 'dev', eventEmitter: EventEmitterService): GlobalServices => {
+export const useGlobalServices = (env: 'prod' | 'dev', eventEmitter: EventEmitterService, dbService: DatabaseService): GlobalServices => {
     const gameRepository: GameRepository = useMemoryGameRepository();
+    const gameDbService: GameDbService = useGameDbService(dbService);
+    const conjugationRaceDbService: ConjugationRaceDbService = useConjugationRaceDbService(dbService, gameDbService);
     const gameService: GameService = useGameService(
         gameRepository,
         useGameFactory(
             useGameCodeGenerator((gameCode: string) => Boolean(gameService.getGame(gameCode).data)),
-            useConjugationRaceGameFactory(useVerbService())
+            useConjugationRaceGameFactory(
+                conjugationRaceDbService,
+                useVerbService()
+            )
         ),
         usePlayerFactory(
             useLobbyPlayerFactory(),
@@ -76,15 +84,11 @@ export const useGlobalServices = (env: 'prod' | 'dev', eventEmitter: EventEmitte
     };
 };
 
-/** Takes in an event listener service and a set of controllers and composes them from left to right */
-// export const composeControllers = (eventListener: EventListenerService) =>
-//     (...controllers: Controller[]) =>
-//         controllers.reduce((prevEventListener: EventListenerService, currController: Controller) => currController(prevEventListener), eventListener);
-
 /**
  * Initializes the given controllers with an event listener service
  * @param eventListener 
  */
 export const initializeControllers =
     (eventListener: EventListenerService) =>
-    (...controllers: Controller[]) => controllers.forEach((controller: Controller) => controller(eventListener));
+        (...controllers: Controller[]) =>
+            controllers.forEach((controller: Controller) => controller(eventListener));

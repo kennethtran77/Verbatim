@@ -36,7 +36,7 @@ export class ConjugationRaceGame extends Game {
      * @param conjugationRaceServices 
      */
     increaseVerbList(conjugationRaceServices: ConjugationRaceServices) {
-        this.verbList = this.verbList.concat(conjugationRaceServices.verbService.generateUniqueVerbs(100, this.settings.tenses));
+        this.verbList = this.verbList.concat(conjugationRaceServices.getVerbService().generateUniqueVerbs(100, this.settings.tenses));
     }
 
     /**
@@ -60,11 +60,20 @@ export class ConjugationRaceGame extends Game {
         gameService.emitToGame('game:conjugationRace:verbsSeenChange', player.id, player.verbsSeen);
 
         // strip verbs of accents
-        const correctAnswer = conjugationRaceServices.verbService.conjugateVerb(currentVerb);
+        const correctAnswer = conjugationRaceServices.getVerbService().conjugateVerb(currentVerb);
         const correctAnswerNoAccent = correctAnswer.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
         const userAnswer = input.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
-        
+
         const correct = correctAnswerNoAccent === userAnswer;
+
+        const verbResponse: VerbResponse = {
+            verb: currentVerb.infinitive,
+            input,
+            correctAnswer,
+            isInputCorrect: correct,
+            answerTime: new Date()
+        };
+        player.verbResponses.push(verbResponse);
 
         if (correct) {
             player.verbsCorrect += 1;
@@ -88,6 +97,17 @@ export interface Verb {
     tense: Tense;
     subject: Subject;
     pronominal: boolean;
+}
+
+/**
+ * Represents a user's submitted input to a verb question.
+ */
+export interface VerbResponse {
+    verb: string;
+    input: string;
+    correctAnswer: string;
+    isInputCorrect: boolean;
+    answerTime: Date
 }
 
 export type Subject = 'je' | 'tu' | 'il' | 'elle' | 'on' | 'nous' | 'vous' | 'ils' | 'elles';

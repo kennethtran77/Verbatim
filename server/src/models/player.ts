@@ -1,3 +1,5 @@
+import { VerbResponse } from "./conjugation_race";
+
 // need classes so that we can check types during runtime
 export class Player {
     id: string;
@@ -10,6 +12,7 @@ export class LobbyPlayer extends Player {
 }
 
 export class ConjugationRacePlayer extends Player {
+    verbResponses: VerbResponse[];
     verbsSeen: number;
     verbsCorrect: number;
     verbsIncorrect: number;
