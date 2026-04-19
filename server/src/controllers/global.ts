@@ -2,13 +2,16 @@ import { Duration } from "../models/game";
 import { GlobalEvents, GlobalServices } from "../services";
 import { EventListenerService } from "../services/global/event_listener";
 
-/** Takes in an event handler service and returns an event handler service to allow controller composition */
-export type Controller = (eventListener: EventListenerService) => EventListenerService;
+/** A function that initializes event handlers on a given event listener */
+export type EventController = (eventListener: EventListenerService) => void;
 
 /**
  * Given an event handler service, initializes a controller that listens and emits the global game functionality (join, quit, create game, etc.)
  */
-const useGlobalController = (services: GlobalServices, events: GlobalEvents): Controller => (eventListener: EventListenerService) => {
+const useGlobalController = (
+    services: GlobalServices,
+    events: GlobalEvents
+): EventController => (eventListener: EventListenerService) => {
     // Handle global events
 
     eventListener.listen("game:getPlayer", (playerId) => {
@@ -38,8 +41,6 @@ const useGlobalController = (services: GlobalServices, events: GlobalEvents): Co
     eventListener.listen('game:leaveGame', (playerId) => {
         return events.handleQuitGameEvent(playerId);
     });
-
-    return eventListener;
 };
 
 export default useGlobalController;

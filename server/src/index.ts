@@ -4,12 +4,12 @@ import http from 'http';
 import { Server, Socket } from 'socket.io';
 import cors, { CorsOptions } from 'cors';
 import dotenv from 'dotenv';
-import { useGlobalEvents, useGlobalServices, initializeControllers } from './services';
+import { useGlobalEvents, useGlobalServices, initializeEventControllers } from './services';
 import { useConjugationRaceEvents, useConjugationRaceServices } from './services/active/conjugation_race';
 import { EventListenerService, useSocketIOEventListener } from './services/global/event_listener';
 import { useSocketIOEventEmitter } from './services/global/event_emitter';
 import useConjugationRaceGame from './controllers/conjugation_race';
-import useGlobalController, { Controller } from './controllers/global';
+import useGlobalController, { EventController } from './controllers/global';
 import { usePSQLDBService } from './services/global/db_service';
 import { Pool } from 'pg';
 
@@ -81,11 +81,9 @@ gameNamespace.on('connection', (socket: Socket) => {
     const conjugationRaceEvents = useConjugationRaceEvents(globalServices, conjugationRaceServices);
 
     // initialize the controllers
-    const globalGameController: Controller = useGlobalController(globalServices, globalEvents);
-    const conjugationRaceGameController: Controller = useConjugationRaceGame(conjugationRaceEvents);
-
-    // initialize the controllers
-    initializeControllers(eventListener)(
+    const globalGameController: EventController = useGlobalController(globalServices, globalEvents);
+    const conjugationRaceGameController: EventController = useConjugationRaceGame(conjugationRaceEvents);
+    initializeEventControllers(eventListener)(
         globalGameController,
         conjugationRaceGameController
     );
