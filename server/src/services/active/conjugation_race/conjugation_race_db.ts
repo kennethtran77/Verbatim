@@ -1,9 +1,12 @@
-import { ConjugationRaceGame, Verb } from "../../../models/conjugation_race";
+import { ConjugationRaceGame, Verb, VerbResponse } from "../../../models/conjugation_race";
 import { DatabaseService } from "../../global/db_service";
 import { GameDbService } from "../../global/game_db";
 
 export interface ConjugationRaceDbService {
+    // Saves the game data to disk
     saveGameData: (game: ConjugationRaceGame) => Promise<void>;
+    // Retrieves the verb responses for a given player in a given game
+    getPlayerVerbResponses: (gameCode: string, playerId: string) => Promise<VerbResponse[]>;
 }
 
 const useConjugationRaceDbService = (
@@ -51,6 +54,31 @@ const useConjugationRaceDbService = (
                 throw err;
             }
         },
+        async getPlayerVerbResponses(gameCode, playerId) {
+            try {
+                const result = await dbService.query(
+                    `SELECT vr.verb_id, v.infinitive, v.tense, v.subject,
+                        vr.input, vr.correct_answer, vr.is_input_correct, vr.answer_time
+                    FROM verb_response vr
+                    JOIN verb v ON v.id = vr.verb_id AND v.game_code = vr.game_code
+                    WHERE vr.game_code = $1 AND vr.player_id = $2
+                    ORDER BY vr.verb_id;`,
+                    [gameCode, playerId]
+                );
+
+                const verbResponses: VerbResponse[] = result.rows.map((row: any) => ({
+                    verb: row.infinitive,
+                    input: row.input,
+                    correctAnswer: row.correct_answer,
+                    isInputCorrect: row.is_input_correct,
+                    answerTime: row.answer_time
+                }));
+                return verbResponses;
+            } catch (err) {
+                console.error(`Failed to get verb responses for player ${playerId} in game ${gameCode}:`, err);
+                throw err;
+            }
+        }
     }
 };
 
