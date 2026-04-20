@@ -4,18 +4,19 @@ import http from 'http';
 import { Server, Socket } from 'socket.io';
 import cors, { CorsOptions } from 'cors';
 import dotenv from 'dotenv';
-import { useGlobalEvents, useGlobalServices, initializeEventControllers } from './services';
-import { useConjugationRaceEvents, useConjugationRaceServices } from './services/active/conjugation_race';
-import { EventListenerService, useSocketIOEventListener } from './services/global/event_listener';
-import { useSocketIOEventEmitter } from './services/global/event_emitter';
-import { createConjugationRaceEventBinder, createConjugationRaceRouteBinder } from './controllers/conjugation_race';
-import createGlobalEventBinder, { EventBinder } from './controllers/global';
-import { usePSQLDBService } from './services/global/db_service';
 import { Pool } from 'pg';
-import { useExpressRequestHandler } from './services/global/request_handler';
-import createGameRouteBinder from './controllers/game';
+import { useGameEvents, useGameServices } from './features/game';
+import { useConjugationRaceEvents, useConjugationRaceServices } from './features/conjugation-race';
+import createGameEventBinder from './features/game/controllers/socket';
+import createGameRouteBinder from './features/game/controllers/rest';
+import { createConjugationRaceEventBinder } from './features/conjugation-race/controllers/socket';
+import { createConjugationRaceRouteBinder } from './features/conjugation-race/controllers/rest';
+import { EventListenerService } from './ports/event_listener';
+import { useSocketIOEventListener } from './adapters/socket_io/event_listener';
+import { useSocketIOEventEmitter } from './adapters/socket_io/event_emitter';
+import { usePSQLDBService } from './adapters/postgres/db_service';
+import { useExpressRequestHandler } from './adapters/express/request_handler';
 
-// boilerplate drivers
 dotenv.config();
 
 const PORT = process.env.PORT || 8000;
@@ -34,7 +35,6 @@ app.use(cors(corsOptions));
 
 const server: http.Server = http.createServer(app);
 
-// create a socket.io server
 const io = new Server(server, {
     cors: corsOptions
 });
@@ -43,7 +43,7 @@ const io = new Server(server, {
 if (env === 'prod') {
     app.use(express.static('build'));
     app.get('*', (req, res) => {
-        res.sendFile('index.html', {root: 'build' });
+        res.sendFile('index.html', { root: 'build' });
     });
 }
 
@@ -51,55 +51,40 @@ server.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
 
-
-// initialize dependencies here
-
-// use socket io connection
+// Adapters
 const gameNamespace = io.of('/api');
-
-// Use node-postgres for db service
 const pool = new Pool();
 
-pool.on('error', (err, client) => {
-    console.error('Unexpected error on idle client', err)
-    process.exit(-1)
-})
-
-// DB services
-const dbService = usePSQLDBService(pool);
-
-const eventEmitter = useSocketIOEventEmitter(gameNamespace);
-const globalServices = useGlobalServices(env, eventEmitter, dbService);
-const conjugationRaceServices = useConjugationRaceServices(globalServices.conjugationRaceDbService);
-
-// on each client connection, initialize an event handler service
-gameNamespace.on('connection', (socket: Socket) => {
-    globalServices.logger.info(`Player ${socket.id} connected`);
-
-    // initialize the socket io player event listener service
-    const eventListener: EventListenerService = useSocketIOEventListener(gameNamespace, socket);
-
-    // initialize events
-    const globalEvents = useGlobalEvents(eventListener, globalServices);
-    const conjugationRaceEvents = useConjugationRaceEvents(globalServices, conjugationRaceServices);
-
-    // create event binders
-    const globalGameEventBinder: EventBinder = createGlobalEventBinder(globalServices, globalEvents);
-    const conjugationRaceEventBinder: EventBinder = createConjugationRaceEventBinder(conjugationRaceEvents);
-    // initialize controllers using binders
-    initializeEventControllers(eventListener)(
-        globalGameEventBinder,
-        conjugationRaceEventBinder
-    );
+pool.on('error', (err) => {
+    console.error('Unexpected error on idle client', err);
+    process.exit(-1);
 });
 
-// Set up REST endpoints
+const dbService = usePSQLDBService(pool);
+const eventEmitter = useSocketIOEventEmitter(gameNamespace);
+
+// Feature services
+const gameServices = useGameServices(env, eventEmitter, dbService);
+const conjugationRaceServices = useConjugationRaceServices(gameServices.conjugationRaceDbService);
+
+// Socket.IO: bind event handlers per connection
+gameNamespace.on('connection', (socket: Socket) => {
+    gameServices.logger.info(`Player ${socket.id} connected`);
+
+    const eventListener: EventListenerService = useSocketIOEventListener(gameNamespace, socket);
+
+    const gameEvents = useGameEvents(eventListener, gameServices);
+    const conjugationRaceEvents = useConjugationRaceEvents(gameServices, conjugationRaceServices);
+
+    createGameEventBinder(gameServices, gameEvents)(eventListener);
+    createConjugationRaceEventBinder(conjugationRaceEvents)(eventListener);
+});
+
+// REST: register routes on mounted routers
 const gameRouter = express.Router();
 app.use('/game', gameRouter);
-const requestHandler = useExpressRequestHandler(gameRouter);
-createGameRouteBinder(globalServices.gameDbService)(requestHandler);
+createGameRouteBinder(gameServices.gameDbService)(useExpressRequestHandler(gameRouter));
 
 const conjugationRaceRouter = express.Router();
 app.use('/conjugation', conjugationRaceRouter);
-const conjugationRaceRequestHandler = useExpressRequestHandler(conjugationRaceRouter);
-createConjugationRaceRouteBinder(conjugationRaceServices.dbService)(conjugationRaceRequestHandler);
+createConjugationRaceRouteBinder(conjugationRaceServices.dbService)(useExpressRequestHandler(conjugationRaceRouter));
