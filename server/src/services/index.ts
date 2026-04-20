@@ -1,4 +1,4 @@
-import { EventController } from '../controllers/global';
+import { EventBinder } from '../controllers/global';
 import useCreateGameEvent, { CreateGameEvent } from '../events/global/create_game';
 import useGetGameStatusEvent, { GetGameStatusEvent } from '../events/global/get_game_status';
 import useJoinGameEvent, { JoinGameEvent } from '../events/global/join_game';
@@ -42,6 +42,7 @@ export interface GlobalServices {
     generateUsername: UsernameGeneratorService;
     eventEmitter: EventEmitterService;
     gameDbService: GameDbService;
+    conjugationRaceDbService: ConjugationRaceDbService;
 }
 
 // define functions that initialize dependencies here
@@ -83,6 +84,7 @@ export const useGlobalServices = (env: 'prod' | 'dev', eventEmitter: EventEmitte
         generateUsername: useUsernameGenerator(names),
         eventEmitter,
         gameDbService,
+        conjugationRaceDbService
     };
 };
 
@@ -92,5 +94,5 @@ export const useGlobalServices = (env: 'prod' | 'dev', eventEmitter: EventEmitte
  */
 export const initializeEventControllers =
     (eventListener: EventListenerService) =>
-        (...controllers: EventController[]) =>
-            controllers.forEach((controller: EventController) => controller(eventListener));
+        (...controllers: EventBinder[]) =>
+            controllers.forEach((controller: EventBinder) => controller(eventListener));

@@ -8,12 +8,12 @@ import { useGlobalEvents, useGlobalServices, initializeEventControllers } from '
 import { useConjugationRaceEvents, useConjugationRaceServices } from './services/active/conjugation_race';
 import { EventListenerService, useSocketIOEventListener } from './services/global/event_listener';
 import { useSocketIOEventEmitter } from './services/global/event_emitter';
-import useConjugationRaceGame from './controllers/conjugation_race';
-import useGlobalController, { EventController } from './controllers/global';
+import { createConjugationRaceEventBinder, createConjugationRaceRouteBinder } from './controllers/conjugation_race';
+import createGlobalEventBinder, { EventBinder } from './controllers/global';
 import { usePSQLDBService } from './services/global/db_service';
 import { Pool } from 'pg';
 import { useExpressRequestHandler } from './services/global/request_handler';
-import useGameRestController from './controllers/game';
+import createGameRouteBinder from './controllers/game';
 
 // boilerplate drivers
 dotenv.config();
@@ -65,11 +65,12 @@ pool.on('error', (err, client) => {
     process.exit(-1)
 })
 
+// DB services
 const dbService = usePSQLDBService(pool);
 
 const eventEmitter = useSocketIOEventEmitter(gameNamespace);
 const globalServices = useGlobalServices(env, eventEmitter, dbService);
-const conjugationRaceServices = useConjugationRaceServices();
+const conjugationRaceServices = useConjugationRaceServices(globalServices.conjugationRaceDbService);
 
 // on each client connection, initialize an event handler service
 gameNamespace.on('connection', (socket: Socket) => {
@@ -82,12 +83,13 @@ gameNamespace.on('connection', (socket: Socket) => {
     const globalEvents = useGlobalEvents(eventListener, globalServices);
     const conjugationRaceEvents = useConjugationRaceEvents(globalServices, conjugationRaceServices);
 
-    // initialize the controllers
-    const globalGameController: EventController = useGlobalController(globalServices, globalEvents);
-    const conjugationRaceGameController: EventController = useConjugationRaceGame(conjugationRaceEvents);
+    // create event binders
+    const globalGameEventBinder: EventBinder = createGlobalEventBinder(globalServices, globalEvents);
+    const conjugationRaceEventBinder: EventBinder = createConjugationRaceEventBinder(conjugationRaceEvents);
+    // initialize controllers using binders
     initializeEventControllers(eventListener)(
-        globalGameController,
-        conjugationRaceGameController
+        globalGameEventBinder,
+        conjugationRaceEventBinder
     );
 });
 
@@ -95,6 +97,9 @@ gameNamespace.on('connection', (socket: Socket) => {
 const gameRouter = express.Router();
 app.use('/game', gameRouter);
 const requestHandler = useExpressRequestHandler(gameRouter);
+createGameRouteBinder(globalServices.gameDbService)(requestHandler);
 
-// Register endpoints
-useGameRestController(globalServices.gameDbService)(requestHandler);
+const conjugationRaceRouter = express.Router();
+app.use('/conjugation', conjugationRaceRouter);
+const conjugationRaceRequestHandler = useExpressRequestHandler(conjugationRaceRouter);
+createConjugationRaceRouteBinder(conjugationRaceServices.dbService)(conjugationRaceRequestHandler);

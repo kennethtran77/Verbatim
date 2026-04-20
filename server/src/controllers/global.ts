@@ -3,15 +3,15 @@ import { GlobalEvents, GlobalServices } from "../services";
 import { EventListenerService } from "../services/global/event_listener";
 
 /** A function that initializes event handlers on a given event listener */
-export type EventController = (eventListener: EventListenerService) => void;
+export type EventBinder = (eventListener: EventListenerService) => void;
 
 /**
  * Given an event handler service, initializes a controller that listens and emits the global game functionality (join, quit, create game, etc.)
  */
-const useGlobalController = (
+const createGlobalEventBinder = (
     services: GlobalServices,
     events: GlobalEvents
-): EventController => (eventListener: EventListenerService) => {
+): EventBinder => (eventListener: EventListenerService) => {
     // Handle global events
 
     eventListener.listen("game:getPlayer", (playerId) => {
@@ -43,4 +43,4 @@ const useGlobalController = (
     });
 };
 
-export default useGlobalController;
+export default createGlobalEventBinder;
