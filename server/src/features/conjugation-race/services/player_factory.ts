@@ -3,7 +3,7 @@ import { ConjugationRacePlayer } from "../models/player";
 
 export type ConjugationRacePlayerFactory = (player: Player) => ConjugationRacePlayer;
 
-export const useConjugationRacePlayerFactory = (): ConjugationRacePlayerFactory => {
+export const createConjugationRacePlayerFactory = (): ConjugationRacePlayerFactory => {
     return (player) =>
         Object.setPrototypeOf(
         {

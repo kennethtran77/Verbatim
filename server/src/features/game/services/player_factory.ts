@@ -5,7 +5,7 @@ import Response from "../../../shared/response";
 
 export type PlayerFactory = (playerId: string, gameCode: string, username: string, mode: GameMode | 'lobby') => Response<Player>;
 
-const usePlayerFactory = (
+const createPlayerFactory = (
     createLobbyPlayer: (player: Player) => LobbyPlayer,
     createConjugationRacePlayer: (player: Player) => ConjugationRacePlayer,
 ): PlayerFactory => {
@@ -35,4 +35,4 @@ const usePlayerFactory = (
     }
 }
 
-export default usePlayerFactory;
+export default createPlayerFactory;

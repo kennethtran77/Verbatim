@@ -2,7 +2,7 @@ import { LobbyPlayer, Player } from "../models/player";
 
 export type LobbyPlayerFactory = (player: Player) => LobbyPlayer;
 
-export const useLobbyPlayerFactory = (): LobbyPlayerFactory => {
+export const createLobbyPlayerFactory = (): LobbyPlayerFactory => {
     return (player) =>
         Object.setPrototypeOf(
         {

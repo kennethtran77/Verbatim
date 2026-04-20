@@ -17,7 +17,7 @@ export interface GameRepository {
 }
 
 /** Returns a GameStore that uses memory and the Map data structure. */
-const useMemGameRepository = (): GameRepository => {
+const createMemGameRepository = (): GameRepository => {
     /** A map of active games */
     const games: Map<string, Game> = new Map();
     /** A map of player ids to player objects */
@@ -91,4 +91,4 @@ const useMemGameRepository = (): GameRepository => {
     };
 };
 
-export default useMemGameRepository;
+export default createMemGameRepository;

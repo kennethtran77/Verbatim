@@ -1,7 +1,7 @@
 import { GameServices } from "../game";
-import useSubmitAnswerEvent, { SubmitAnswerEvent } from "./events/submit_answer";
+import createSubmitAnswerEvent, { SubmitAnswerEvent } from "./events/submit_answer";
 import { ConjugationRaceDbService } from "./services/db";
-import useVerbService, { VerbService } from "./services/verb_service";
+import createVerbService, { VerbService } from "./services/verb_service";
 
 export interface ConjugationRaceServices {
     getVerbService: () => VerbService;
@@ -12,13 +12,13 @@ export interface ConjugationRaceEvents {
     handleSubmitAnswer: SubmitAnswerEvent;
 }
 
-export const useConjugationRaceServices = (
+export const createConjugationRaceServices = (
     dbService: ConjugationRaceDbService,
 ): ConjugationRaceServices => ({
-    getVerbService: useVerbService,
+    getVerbService: createVerbService,
     dbService,
 });
 
-export const useConjugationRaceEvents = (gameServices: GameServices, conjugationRaceServices: ConjugationRaceServices): ConjugationRaceEvents => ({
-    handleSubmitAnswer: useSubmitAnswerEvent(gameServices.gameService, conjugationRaceServices),
+export const createConjugationRaceEvents = (gameServices: GameServices, conjugationRaceServices: ConjugationRaceServices): ConjugationRaceEvents => ({
+    handleSubmitAnswer: createSubmitAnswerEvent(gameServices.gameService, conjugationRaceServices),
 });

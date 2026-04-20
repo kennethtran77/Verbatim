@@ -32,7 +32,7 @@ export interface GameService {
     stopGameCountdown: (game: Game, logger?: Logger) => void;
 }
 
-const useGameService = (
+const createGameService = (
     gameRepository: GameRepository,
     gameFactory: GameFactory,
     playerFactory: PlayerFactory,
@@ -171,4 +171,4 @@ const useGameService = (
     };
 };
 
-export default useGameService;
+export default createGameService;

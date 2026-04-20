@@ -5,7 +5,7 @@ import { GameService } from "../services/game_service";
 
 export type SetReadyEvent = (playerId: string) => Response;
 
-const useSetReadyEvent = (
+const createSetReadyEvent = (
     gameService: GameService
 ): SetReadyEvent => {
     return (playerId) => {
@@ -51,4 +51,4 @@ const useSetReadyEvent = (
     }
 };
 
-export default useSetReadyEvent;
+export default createSetReadyEvent;

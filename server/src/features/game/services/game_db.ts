@@ -6,7 +6,7 @@ export interface GameDbService {
     getGameData: (gameCode: string) => Promise<GameData | null>;
 }
 
-const useGameDbService = (
+const createGameDbService = (
     dbService: DatabaseService
 ): GameDbService => {
     return {
@@ -73,4 +73,4 @@ const useGameDbService = (
     }
 };
 
-export default useGameDbService;
+export default createGameDbService;

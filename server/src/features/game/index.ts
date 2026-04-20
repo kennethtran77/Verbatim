@@ -1,24 +1,24 @@
-import useCreateGameEvent, { CreateGameEvent } from './events/create_game';
-import useGetGameStatusEvent, { GetGameStatusEvent } from './events/get_game_status';
-import useJoinGameEvent, { JoinGameEvent } from './events/join_game';
-import useQuitGameEvent, { QuitGameEvent } from './events/quit_game';
-import useSetReadyEvent, { SetReadyEvent } from './events/set_ready';
-import useConjugationRaceGameFactory from '../conjugation-race/services/game_factory';
-import { useConjugationRacePlayerFactory } from '../conjugation-race/services/player_factory';
-import useVerbService from '../conjugation-race/services/verb_service';
-import useConjugationRaceDbService, { ConjugationRaceDbService } from '../conjugation-race/services/db';
-import useGameCodeGenerator, { GameCodeGeneratorService } from './services/code_generator';
-import useGameFactory from './services/game_factory';
-import useGameService, { GameService } from './services/game_service';
-import useMemGameRepository, { GameRepository } from './services/game_repository';
-import { useLobbyPlayerFactory } from './services/lobby_player_factory';
-import useUsernameGenerator, { UsernameGeneratorService } from './services/name_generator';
-import usePlayerFactory from './services/player_factory';
-import useTenseStore, { TenseStore } from './services/tense_store';
-import useGameDbService, { GameDbService } from './services/game_db';
+import createCreateGameEvent, { CreateGameEvent } from './events/create_game';
+import createGetGameStatusEvent, { GetGameStatusEvent } from './events/get_game_status';
+import createJoinGameEvent, { JoinGameEvent } from './events/join_game';
+import createQuitGameEvent, { QuitGameEvent } from './events/quit_game';
+import createSetReadyEvent, { SetReadyEvent } from './events/set_ready';
+import createConjugationRaceGameFactory from '../conjugation-race/services/game_factory';
+import { createConjugationRacePlayerFactory } from '../conjugation-race/services/player_factory';
+import createVerbService from '../conjugation-race/services/verb_service';
+import createConjugationRaceDbService, { ConjugationRaceDbService } from '../conjugation-race/services/db';
+import createGameCodeGenerator, { GameCodeGeneratorService } from './services/code_generator';
+import createGameFactory from './services/game_factory';
+import createGameService, { GameService } from './services/game_service';
+import createMemGameRepository, { GameRepository } from './services/game_repository';
+import { createLobbyPlayerFactory } from './services/lobby_player_factory';
+import createUsernameGenerator, { UsernameGeneratorService } from './services/name_generator';
+import createPlayerFactory from './services/player_factory';
+import createTenseStore, { TenseStore } from './services/tense_store';
+import createGameDbService, { GameDbService } from './services/game_db';
 import { gameModes } from './models/game';
 import { tenses } from './models/tenses';
-import useConsoleLogger from '../../adapters/console/logger';
+import createConsoleLogger from '../../adapters/console/logger';
 import { Logger } from '../../ports/logger';
 import { EventEmitterService } from '../../ports/event_emitter';
 import { EventListenerService } from '../../ports/event_listener';
@@ -45,40 +45,40 @@ export interface GameServices {
 
 const names: string[] = ["Apple", "Banana", "Pear", "Kiwi", "Grapefruit", "Watermelon", "Grape", "Strawberry", "Peach", "Lemon", "Lime"];
 
-export const useGameEvents = (eventListener: EventListenerService, gameServices: GameServices): GameEvents => ({
-    handleJoinGameEvent: useJoinGameEvent(eventListener, gameServices.generateUsername, gameServices.gameService, gameServices.logger),
-    handleCreateGameEvent: useCreateGameEvent(gameModes, gameServices.tenseStore, gameServices.gameService),
-    handleQuitGameEvent: useQuitGameEvent(eventListener, gameServices.gameService, gameServices.logger),
-    handleGetGameStatusEvent: useGetGameStatusEvent(gameServices.gameService),
-    handleSetReadyEvent: useSetReadyEvent(gameServices.gameService),
+export const createGameEvents = (eventListener: EventListenerService, gameServices: GameServices): GameEvents => ({
+    handleJoinGameEvent: createJoinGameEvent(eventListener, gameServices.generateUsername, gameServices.gameService, gameServices.logger),
+    handleCreateGameEvent: createCreateGameEvent(gameModes, gameServices.tenseStore, gameServices.gameService),
+    handleQuitGameEvent: createQuitGameEvent(eventListener, gameServices.gameService, gameServices.logger),
+    handleGetGameStatusEvent: createGetGameStatusEvent(gameServices.gameService),
+    handleSetReadyEvent: createSetReadyEvent(gameServices.gameService),
 });
 
-export const useGameServices = (env: 'prod' | 'dev', eventEmitter: EventEmitterService, dbService: DatabaseService): GameServices => {
-    const gameRepository: GameRepository = useMemGameRepository();
-    const gameDbService: GameDbService = useGameDbService(dbService);
-    const conjugationRaceDbService: ConjugationRaceDbService = useConjugationRaceDbService(dbService, gameDbService);
-    const gameService: GameService = useGameService(
+export const createGameServices = (env: 'prod' | 'dev', eventEmitter: EventEmitterService, dbService: DatabaseService): GameServices => {
+    const gameRepository: GameRepository = createMemGameRepository();
+    const gameDbService: GameDbService = createGameDbService(dbService);
+    const conjugationRaceDbService: ConjugationRaceDbService = createConjugationRaceDbService(dbService, gameDbService);
+    const gameService: GameService = createGameService(
         gameRepository,
-        useGameFactory(
-            useGameCodeGenerator((gameCode: string) => Boolean(gameService.getGame(gameCode).data)),
-            useConjugationRaceGameFactory(
+        createGameFactory(
+            createGameCodeGenerator((gameCode: string) => Boolean(gameService.getGame(gameCode).data)),
+            createConjugationRaceGameFactory(
                 conjugationRaceDbService,
-                useVerbService()
+                createVerbService()
             )
         ),
-        usePlayerFactory(
-            useLobbyPlayerFactory(),
-            useConjugationRacePlayerFactory()
+        createPlayerFactory(
+            createLobbyPlayerFactory(),
+            createConjugationRacePlayerFactory()
         ),
         eventEmitter
     );
 
     return {
         gameService,
-        tenseStore: useTenseStore(tenses),
-        logger: useConsoleLogger(env),
-        generateGameCode: useGameCodeGenerator((gameCode: string) => Boolean(gameService.getGame(gameCode).data)),
-        generateUsername: useUsernameGenerator(names),
+        tenseStore: createTenseStore(tenses),
+        logger: createConsoleLogger(env),
+        generateGameCode: createGameCodeGenerator((gameCode: string) => Boolean(gameService.getGame(gameCode).data)),
+        generateUsername: createUsernameGenerator(names),
         eventEmitter,
         gameDbService,
         conjugationRaceDbService,

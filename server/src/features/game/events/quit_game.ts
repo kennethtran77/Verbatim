@@ -6,7 +6,7 @@ import { Logger } from "../../../ports/logger";
 
 export type QuitGameEvent = (playerId: string) => Response;
 
-const useQuitGameEvent = (
+const createQuitGameEvent = (
     eventHandler: EventListenerService,
     gameService: GameService,
     logger: Logger
@@ -66,4 +66,4 @@ const useQuitGameEvent = (
     }
 };
 
-export default useQuitGameEvent;
+export default createQuitGameEvent;

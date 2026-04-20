@@ -8,7 +8,7 @@ import { GameService } from "../../game/services/game_service";
 
 export type SubmitAnswerEvent = (playerId: string, answer: string) => Response<Verb>;
 
-const useSubmitAnswerEvent = (
+const createSubmitAnswerEvent = (
     gameService: GameService,
     conjugationRaceServices: ConjugationRaceServices
 ): SubmitAnswerEvent => {
@@ -62,4 +62,4 @@ const useSubmitAnswerEvent = (
     }
 };
 
-export default useSubmitAnswerEvent;
+export default createSubmitAnswerEvent;

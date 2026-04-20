@@ -9,7 +9,7 @@ export interface ConjugationRaceDbService {
     getPlayerVerbResponses: (gameCode: string, playerId: string) => Promise<VerbResponse[]>;
 }
 
-const useConjugationRaceDbService = (
+const createConjugationRaceDbService = (
     dbService: DatabaseService,
     gameDbService: GameDbService
 ): ConjugationRaceDbService => {
@@ -82,4 +82,4 @@ const useConjugationRaceDbService = (
     }
 };
 
-export default useConjugationRaceDbService;
+export default createConjugationRaceDbService;

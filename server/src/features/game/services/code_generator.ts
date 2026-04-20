@@ -5,7 +5,7 @@ export type GameCodeGenerator = (isCodeTaken: (code: string) => boolean) => Game
  */
 export type GameCodeGeneratorService = () => string;
 
-const useGameCodeGenerator: GameCodeGenerator = (isCodeTaken) => {
+const createGameCodeGenerator: GameCodeGenerator = (isCodeTaken) => {
     return () => {
         const codeLength = 8;
         const codeGenerator = () => (Math.random() + 1).toString(36).substring(codeLength).toUpperCase();
@@ -20,4 +20,4 @@ const useGameCodeGenerator: GameCodeGenerator = (isCodeTaken) => {
     }
 }
 
-export default useGameCodeGenerator;
+export default createGameCodeGenerator;

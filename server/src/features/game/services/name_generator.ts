@@ -6,7 +6,7 @@ export type UsernameGenerator = (names: string[]) => UsernameGeneratorService;
  */
 export type UsernameGeneratorService = () => string;
 
-const useUsernameGenerator: UsernameGenerator = (names: string[]) => {
+const createUsernameGenerator: UsernameGenerator = (names: string[]) => {
     return () => {
         const pick = (): string => names[Math.floor(Math.random() * names.length)];
         const randomInt = (): number => Math.floor(Math.random() * 1000);
@@ -15,4 +15,4 @@ const useUsernameGenerator: UsernameGenerator = (names: string[]) => {
     }
 }
 
-export default useUsernameGenerator;
+export default createUsernameGenerator;

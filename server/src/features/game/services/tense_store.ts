@@ -5,7 +5,7 @@ export interface TenseStore {
     validateTenses: (tenseValues: string[]) => Response<Tense[]>;
 }
 
-const useTenseStore = (tenses: Tense[]): TenseStore => {
+const createTenseStore = (tenses: Tense[]): TenseStore => {
     return {
         validateTenses: (tenseValues) => {
             let tenseItems: Tense[] = [];
@@ -32,4 +32,4 @@ const useTenseStore = (tenses: Tense[]): TenseStore => {
     }
 };
 
-export default useTenseStore;
+export default createTenseStore;

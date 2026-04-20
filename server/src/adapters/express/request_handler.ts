@@ -2,7 +2,7 @@ import { Router } from "express";
 import { RequestHandler, RequestHandlerService, RequestMethod } from "../../ports/request_handler";
 
 /** Uses the Express implementation of handling requests */
-export const useExpressRequestHandler = (router: Router): RequestHandlerService => {
+export const createExpressRequestHandler = (router: Router): RequestHandlerService => {
     // Registers a request handler for a specific HTTP method and path
     const register = (method: RequestMethod) => <T>(path: string, handler: RequestHandler<T>) => {
         router[method](path, async (req, res) => {

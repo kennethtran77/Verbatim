@@ -9,7 +9,7 @@ import { ConjugationRaceDbService } from "./db";
 
 export type ConjugationRaceGameFactory = (game: Game) => ConjugationRaceGame;
 
-const useConjugationRaceGameFactory = (
+const createConjugationRaceGameFactory = (
     dbService: ConjugationRaceDbService,
     verbService: VerbService
 ): ConjugationRaceGameFactory => {
@@ -45,4 +45,4 @@ const useConjugationRaceGameFactory = (
     }
 }
 
-export default useConjugationRaceGameFactory;
+export default createConjugationRaceGameFactory;

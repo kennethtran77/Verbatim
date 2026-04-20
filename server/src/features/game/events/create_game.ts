@@ -5,7 +5,7 @@ import { TenseStore } from "../services/tense_store";
 
 export type CreateGameEvent = (mode: string, duration: Duration, tenses: string[], maxPlayers: number) => Response<string>;
 
-const useCreateGameEvent = (
+const createCreateGameEvent = (
     gameModes: string[],
     tenseStore: TenseStore,
     gameService: GameService
@@ -86,4 +86,4 @@ const useCreateGameEvent = (
     }
 }
 
-export default useCreateGameEvent;
+export default createCreateGameEvent;

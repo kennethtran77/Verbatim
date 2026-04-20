@@ -4,7 +4,7 @@ import { GameService } from "../services/game_service";
 
 export type GetGameStatusEvent = (gameCode: string) => Response<GameState>;
 
-const useGetGameStatusEvent = (gameService: GameService): GetGameStatusEvent => {
+const createGetGameStatusEvent = (gameService: GameService): GetGameStatusEvent => {
     return (gameCode) => {
         const getGameRes = gameService.getGame(gameCode);
         const game = getGameRes.data;
@@ -36,4 +36,4 @@ const useGetGameStatusEvent = (gameService: GameService): GetGameStatusEvent => 
     }
 };
 
-export default useGetGameStatusEvent;
+export default createGetGameStatusEvent;

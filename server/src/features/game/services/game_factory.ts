@@ -8,7 +8,7 @@ import { GameService } from "./game_service";
 
 export type GameFactory = (mode: GameMode, duration: Duration, tenses: Tense[]) => Response<Game>;
 
-const useGameFactory = (
+const createGameFactory = (
     generateGameCode: GameCodeGeneratorService,
     conjugationGameRaceFactory: ConjugationRaceGameFactory
 ): GameFactory => {
@@ -68,4 +68,4 @@ const useGameFactory = (
     }
 }
 
-export default useGameFactory;
+export default createGameFactory;

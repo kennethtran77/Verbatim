@@ -8,7 +8,7 @@ import { GameService } from "../services/game_service";
 
 export type JoinGameEvent = (playerId: string, gameCode: string) => Response<GameConnectionData>;
 
-const useJoinGameEvent = (
+const createJoinGameEvent = (
     eventListener: EventListenerService,
     generateUsername: UsernameGeneratorService,
     gameService: GameService,
@@ -74,4 +74,4 @@ const useJoinGameEvent = (
     }
 };
 
-export default useJoinGameEvent;
+export default createJoinGameEvent;

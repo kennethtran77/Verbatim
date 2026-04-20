@@ -6,7 +6,7 @@ export interface VerbService {
     conjugateVerb: (verb: Verb) => string;
 }
 
-const useVerbService = (): VerbService => {
+const createVerbService = (): VerbService => {
     const shuffle = (array: any[]) => {
         let currentIndex = array.length, randomIndex;
 
@@ -136,4 +136,4 @@ const useVerbService = (): VerbService => {
     }
 };
 
-export default useVerbService;
+export default createVerbService;
