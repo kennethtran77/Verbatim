@@ -1,5 +1,5 @@
 import { Socket } from "socket.io-client";
-import Response from "../../../server/src/models/response";
+import Response from "../../../shared/response";
 
 export interface EventHandler {
     /** Emits an event and returns a response from the server */

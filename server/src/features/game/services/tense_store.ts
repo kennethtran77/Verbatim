@@ -1,4 +1,4 @@
-import Response from '../../../shared/response';
+import Response from '../../../../../shared/response';
 import { Tense } from '../models/tenses';
 
 export interface TenseStore {

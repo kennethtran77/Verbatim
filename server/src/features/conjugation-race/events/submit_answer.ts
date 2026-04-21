@@ -2,7 +2,7 @@ import { ConjugationRaceGame, Verb } from "../models/conjugation_race";
 import { Game } from "../../game/models/game";
 import { Player } from "../../game/models/player";
 import { ConjugationRacePlayer } from "../models/player";
-import Response from "../../../shared/response";
+import Response from "../../../../../shared/response";
 import { ConjugationRaceServices } from "..";
 import { GameService } from "../../game/services/game_service";
 

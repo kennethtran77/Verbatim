@@ -1,6 +1,6 @@
 import { Game } from "../models/game";
 import { LobbyPlayer, Player } from "../models/player";
-import Response from "../../../shared/response";
+import Response from "../../../../../shared/response";
 import { GameService } from "../services/game_service";
 
 export type SetReadyEvent = (playerId: string) => Response;

@@ -4,7 +4,7 @@ import { Player } from "../../game/models/player";
 import { ConjugationRacePlayer } from "../models/player";
 import { GameService } from "../../game/services/game_service";
 import { VerbService } from "./verb_service";
-import Response from "../../../shared/response";
+import Response from "../../../../../shared/response";
 import { ConjugationRaceDbService } from "./db";
 
 export type ConjugationRaceGameFactory = (game: Game) => ConjugationRaceGame;

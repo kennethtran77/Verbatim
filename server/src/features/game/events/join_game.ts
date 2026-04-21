@@ -1,5 +1,5 @@
 import { Game, GameConnectionData } from "../models/game";
-import Response from "../../../shared/response";
+import Response from "../../../../../shared/response";
 import { LobbyPlayer, Player } from "../models/player";
 import { EventListenerService } from "../../../ports/event_listener";
 import { UsernameGeneratorService } from "../services/name_generator";

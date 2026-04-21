@@ -1,5 +1,5 @@
 import { LobbyPlayer } from "../models/player";
-import Response from "../../../shared/response";
+import Response from "../../../../../shared/response";
 import { EventListenerService } from "../../../ports/event_listener";
 import { GameService } from "../services/game_service";
 import { Logger } from "../../../ports/logger";

@@ -1,7 +1,7 @@
 import { GameMode } from "../models/game";
 import { LobbyPlayer, Player } from "../models/player";
 import { ConjugationRacePlayer } from "../../conjugation-race/models/player";
-import Response from "../../../shared/response";
+import Response from "../../../../../shared/response";
 
 export type PlayerFactory = (playerId: string, gameCode: string, username: string, mode: GameMode | 'lobby') => Response<Player>;
 

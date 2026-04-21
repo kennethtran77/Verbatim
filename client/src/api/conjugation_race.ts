@@ -1,5 +1,5 @@
-import { LeaderboardValue, Verb } from "../../../server/src/models/conjugation_race";
-import Response from "../../../server/src/models/response";
+import { LeaderboardValue, Verb } from "../../../shared/conjugation_race";
+import Response from "../../../shared/response";
 
 export interface ConjugationRaceIO {
     /** An event listener that notifies the player that the leaderboard has changed */

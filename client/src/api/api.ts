@@ -1,9 +1,9 @@
 import IApi from './index';
 
-import { Duration, GameConnectionData, GameState } from '../../../server/src/models/game';
-import Response from '../../../server/src/models/response';
-import { Player } from '../../../server/src/models/player';
-import { LeaderboardValue, Verb } from '../../../server/src/models/conjugation_race';
+import { Duration, GameConnectionData, GameState } from '../../../shared/game';
+import Response from '../../../shared/response';
+import { Player } from '../../../shared/player';
+import { LeaderboardValue, Verb } from '../../../shared/conjugation_race';
 import { EventHandler } from './event_handler';
 
 const initApi = (eventHandler: EventHandler): IApi => {

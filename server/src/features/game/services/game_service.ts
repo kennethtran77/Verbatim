@@ -1,6 +1,6 @@
 import { GameFactory } from "./game_factory";
 import { GameRepository } from "./game_repository";
-import Response from "../../../shared/response";
+import Response from "../../../../../shared/response";
 import { Tense } from "../models/tenses";
 import { Game, GameMode, Duration, GameState } from "../models/game";
 import { Player } from "../models/player";

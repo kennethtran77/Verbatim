@@ -1,4 +1,4 @@
-import Response from "../shared/response";
+import Response from "../../../shared/response";
 
 export type EventHandler<T> = (playerId: string, data?: any) => void | Response<T>;
 

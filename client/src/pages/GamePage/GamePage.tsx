@@ -3,9 +3,9 @@ import { useEffect } from "react";
 import { Navigate, useParams } from "react-router-dom";
 import LoadingPage from "../LoadingPage/LoadingPage";
 import GameLobby from "./GameLobby/GameLobby";
-import { LobbyPlayer, Player } from "../../../../server/src/models/player";
+import { LobbyPlayer, Player } from "../../../../shared/player";
 import useGameContext from "../../hooks/useGameContext.hook";
-import { GameState } from "../../../../server/src/models/game";
+import { GameState } from "../../../../shared/game";
 import ConjugationRaceGame from "./ConjugationRaceGame/ConjugationRaceGame";
 
 const GamePage = () => {

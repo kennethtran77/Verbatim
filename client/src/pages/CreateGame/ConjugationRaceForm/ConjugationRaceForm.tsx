@@ -1,5 +1,5 @@
 import { ChangeEvent, CSSProperties } from "react";
-import { Duration } from "../../../../../server/src/models/game";
+import { Duration } from "../../../../../shared/game";
 import Input from "../../../components/Input/Input";
 import Toggle, { ToggleChangeEvent } from "../../../components/Toggle/Toggle";
 import { TenseValue } from "../../../models/tenses";

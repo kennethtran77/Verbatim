@@ -1,6 +1,6 @@
 import { Game } from "../models/game";
 import { Player } from "../models/player";
-import Response from "../../../shared/response";
+import Response from "../../../../../shared/response";
 
 /** Holds players and games and ways to add, remove, and fetch them. */
 export interface GameRepository {

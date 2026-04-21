@@ -2,15 +2,15 @@ import PageTitle from "../../../components/PageTitle/PageTitle";
 import VideogameAssetIcon from '@mui/icons-material/VideogameAsset';
 import VerbCard from "./VerbCard";
 import LeaderboardCard from "../../../components/LeaderboardCard/LeaderboardCard";
-import { Player } from "../../../../../server/src/models/player";
+import { Player } from "../../../../../shared/player";
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import { ConjugationRaceIO } from "../../../api/conjugation_race";
 import StatsCard from "../../../components/StatsCard/StatsCard";
-import { LeaderboardValue, Verb } from "../../../../../server/src/models/conjugation_race";
+import { LeaderboardValue, Verb } from "../../../../../shared/conjugation_race";
 import LoadingPage from "../../LoadingPage/LoadingPage";
-import { Duration, GameState } from "../../../../../server/src/models/game";
+import { Duration, GameState } from "../../../../../shared/game";
 import GameEndPage from "../GameEndPage";
-import Response from "../../../../../server/src/models/response";
+import Response from "../../../../../shared/response";
 
 import TimerIcon from '@mui/icons-material/Timer';
 

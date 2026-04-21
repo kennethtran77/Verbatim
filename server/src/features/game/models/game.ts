@@ -1,6 +1,8 @@
+import { GameState, GameSettings, Duration } from "../../../../../shared/game";
 import { GameService } from "../services/game_service";
-import { LobbyPlayer, Player } from "./player";
-import { Tense } from "./tenses";
+import { Player } from "./player";
+
+export { GameState, GameConnectionData, GameSettings, Duration, gameModes, GameMode } from "../../../../../shared/game";
 
 export class GameData {
     code: string;
@@ -25,31 +27,3 @@ export class Game {
     onStart: (gameService: GameService) => any;
     onEnd: (gameService: GameService) => any;
 }
-
-export type GameState = 'waiting' | 'starting' | 'active' | 'ending';
-
-/** The data that a player will receive when they join a game */
-export interface GameConnectionData {
-    state: GameState;
-    initialPlayers: LobbyPlayer[];
-    playerId: string;
-    settings: GameSettings;
-}
-
-export interface GameSettings {
-    mode: string;
-    tenses: Tense[];
-    duration: Duration;
-    maxPlayers: number;
-}
-
-export interface Duration {
-    minutes: number;
-    seconds: number;
-}
-
-export const gameModes = [
-    'conjugation-race'
-];
-
-export type GameMode = typeof gameModes[number];

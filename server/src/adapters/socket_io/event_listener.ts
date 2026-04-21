@@ -1,5 +1,5 @@
 import { Namespace, Socket } from "socket.io";
-import Response from "../../shared/response";
+import Response from "../../../../shared/response";
 import { EventHandler, EventListenerService } from "../../ports/event_listener";
 
 /** Uses the Socket IO implementation for handling bi-directional events */

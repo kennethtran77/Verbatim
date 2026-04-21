@@ -1,7 +1,7 @@
-import { Player } from "../../../server/src/models/player";
+import { Player } from "../../../shared/player";
 import { GameContext } from "./game";
-import Response from "../../../server/src/models/response";
-import { Duration } from "../../../server/src/models/game";
+import Response from "../../../shared/response";
+import { Duration } from "../../../shared/game";
 
 interface IApi {
     getPlayer(): Promise<Response<Player>>;

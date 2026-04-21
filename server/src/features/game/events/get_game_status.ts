@@ -1,5 +1,5 @@
 import { GameState } from "../models/game";
-import Response from "../../../shared/response";
+import Response from "../../../../../shared/response";
 import { GameService } from "../services/game_service";
 
 export type GetGameStatusEvent = (gameCode: string) => Response<GameState>;

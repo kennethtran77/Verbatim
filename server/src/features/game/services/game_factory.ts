@@ -1,6 +1,6 @@
 import { ConjugationRaceGame } from "../../conjugation-race/models/conjugation_race";
 import { GameMode, Duration, Game } from "../models/game";
-import Response from "../../../shared/response";
+import Response from "../../../../../shared/response";
 import { Tense } from "../models/tenses";
 import { ConjugationRaceGameFactory } from "../../conjugation-race/services/game_factory";
 import { GameCodeGeneratorService } from "./code_generator";

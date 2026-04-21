@@ -2,12 +2,9 @@ import { ConjugationRaceServices } from "..";
 import { GameService } from "../../game/services/game_service";
 import { Game } from "../../game/models/game";
 import { ConjugationRacePlayer } from "./player";
-import { Tense } from "../../game/models/tenses";
+import { LeaderboardValue, Verb, VerbResponse } from "../../../../../shared/conjugation_race";
 
-export interface LeaderboardValue {
-    playerName: string;
-    score: number;
-}
+export { LeaderboardValue, Verb, VerbResponse, Subject } from "../../../../../shared/conjugation_race";
 
 export class ConjugationRaceGame extends Game {
     /** A list of players sorted by verbs most correctly answered */
@@ -16,11 +13,9 @@ export class ConjugationRaceGame extends Game {
 
     /**
      * Updates the leaderboard.
-     * @param gameService
      */
     updateLeaderboard(gameService: GameService) {
         const comparator = (player1: ConjugationRacePlayer, player2: ConjugationRacePlayer) => player2.verbsCorrect - player1.verbsCorrect;
-        // sort the leaderboard
         this.leaderboard.sort(comparator);
 
         const newLeaderboard: LeaderboardValue[] = this.leaderboard.map(player => ({
@@ -33,7 +28,6 @@ export class ConjugationRaceGame extends Game {
 
     /**
      * Increases the game's verb list.
-     * @param conjugationRaceServices 
      */
     increaseVerbList(conjugationRaceServices: ConjugationRaceServices) {
         this.verbList = this.verbList.concat(conjugationRaceServices.getVerbService().generateUniqueVerbs(100, this.settings.tenses));
@@ -41,11 +35,6 @@ export class ConjugationRaceGame extends Game {
 
     /**
      * Handles a player's input.
-     * @param gameService 
-     * @param conjugationRaceServices 
-     * @param player 
-     * @param currentVerb 
-     * @param input 
      * @returns whether the player was correct
      */
     handlePlayerInput(
@@ -91,23 +80,3 @@ export class ConjugationRaceGame extends Game {
         return correct;
     }
 }
-
-export interface Verb {
-    infinitive: string;
-    tense: Tense;
-    subject: Subject;
-    pronominal: boolean;
-}
-
-/**
- * Represents a user's submitted input to a verb question.
- */
-export interface VerbResponse {
-    verb: string;
-    input: string;
-    correctAnswer: string;
-    isInputCorrect: boolean;
-    answerTime: Date
-}
-
-export type Subject = 'je' | 'tu' | 'il' | 'elle' | 'on' | 'nous' | 'vous' | 'ils' | 'elles';

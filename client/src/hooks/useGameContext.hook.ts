@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useServices } from "../contexts/services";
 import { GameContext } from "../api/game";
-import Response from "../../../server/src/models/response";
+import Response from "../../../shared/response";
 
 const useGameContext = (gameCode: string): [GameContext | null, boolean] => {
     const { getApi } = useServices();
