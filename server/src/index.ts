@@ -3,6 +3,7 @@ import bodyParser from 'body-parser';
 import http from 'http';
 import { Server, Socket } from 'socket.io';
 import cors, { CorsOptions } from 'cors';
+import { ClientToServerEvents, ServerToClientEvents } from '../../shared/events';
 import dotenv from 'dotenv';
 import { Pool } from 'pg';
 import { createGameEvents, createGameServices } from './features/game';
@@ -35,7 +36,7 @@ app.use(cors(corsOptions));
 
 const server: http.Server = http.createServer(app);
 
-const io = new Server(server, {
+const io = new Server<ClientToServerEvents, ServerToClientEvents>(server, {
     cors: corsOptions
 });
 
@@ -68,10 +69,10 @@ const gameServices = createGameServices(env, eventEmitter, dbService);
 const conjugationRaceServices = createConjugationRaceServices(gameServices.conjugationRaceDbService);
 
 // Socket.IO: bind event handlers per connection
-gameNamespace.on('connection', (socket: Socket) => {
+gameNamespace.on('connection', (socket: Socket<ClientToServerEvents, ServerToClientEvents>) => {
     gameServices.logger.info(`Player ${socket.id} connected`);
 
-    const eventListener: EventListenerService = createSocketIOEventListener(gameNamespace, socket);
+    const eventListener: EventListenerService = createSocketIOEventListener(socket);
 
     const gameEvents = createGameEvents(eventListener, gameServices);
     const conjugationRaceEvents = createConjugationRaceEvents(gameServices, conjugationRaceServices);

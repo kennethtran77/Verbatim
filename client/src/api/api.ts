@@ -1,39 +1,36 @@
 import IApi from './index';
 
-import { Duration, GameConnectionData, GameState } from '../../../shared/game';
-import Response from '../../../shared/response';
-import { Player } from '../../../shared/player';
-import { LeaderboardValue, Verb } from '../../../shared/conjugation_race';
+import { Duration } from '../../../shared/game';
 import { EventHandler } from './event_handler';
 
 const initApi = (eventHandler: EventHandler): IApi => {
     return {
-        getPlayer: () => eventHandler.emit<Player>('game:getPlayer'),
-        getGameStatus: (gameCode: string) => eventHandler.emit<string>('game:getStatus', { gameCode }),
-        createGame: (mode: string, duration: Duration, tenses: string[], maxPlayers: number) => eventHandler.emit<string>('game:createGame', { mode, duration, tenses, maxPlayers }),
-        leaveGame: () => eventHandler.emit("game:leaveGame"),
+        getPlayer: () => eventHandler.emit('game:getPlayer'),
+        getGameStatus: (gameCode: string) => eventHandler.emit('game:getStatus', { gameCode }),
+        createGame: (mode: string, duration: Duration, tenses: string[], maxPlayers: number) => eventHandler.emit('game:createGame', { mode, duration, tenses, maxPlayers }),
+        leaveGame: () => eventHandler.emit('game:leaveGame'),
         joinGame: async (gameCode: string) => {
-            const res: Response<GameConnectionData> = await eventHandler.emit<GameConnectionData>('game:joinGame', { gameCode });
+            const res = await eventHandler.emit('game:joinGame', { gameCode });
 
             if (!res.data) {
-                return Promise.resolve({
+                return {
                     success: res.success,
                     message: res.message
-                });
+                };
             }
 
-            return Promise.resolve({
+            return {
                 success: res.success,
                 message: res.message,
                 data: {
-                    getInitialGameData: () => res.data,
+                    getInitialGameData: () => res.data!,
                     getIO: () => ({
                         getGlobalIO: () => ({
-                            onPlayerJoin: (handlePlayerJoin: ((player: Player) => void)) => eventHandler.listen('game:playerJoined', (player) => handlePlayerJoin(player)),
-                            onPlayerQuit: (handlePlayerQuit: ((player: Player) => void)) => eventHandler.listen('game:playerQuit', (player) => handlePlayerQuit(player)),
-                            onGameStateChange: (handleGameStateChange: ((newState: GameState) => void)) => eventHandler.listen('game:stateChange', (newState) => handleGameStateChange(newState)),
-                            onCounterChange: (handleCounterChange: ((newCounterValue: number) => void)) => eventHandler.listen('game:counterChange', (newCounterValue) => handleCounterChange(newCounterValue)),
-                            onGameDestroy: (handleGameDestroy: () => void) => eventHandler.listen('game:destroy', handleGameDestroy),
+                            onPlayerJoin: (handlePlayerJoin) => eventHandler.listen('game:playerJoined', handlePlayerJoin),
+                            onPlayerQuit: (handlePlayerQuit) => eventHandler.listen('game:playerQuit', handlePlayerQuit),
+                            onGameStateChange: (handleGameStateChange) => eventHandler.listen('game:stateChange', handleGameStateChange),
+                            onCounterChange: (handleCounterChange) => eventHandler.listen('game:counterChange', handleCounterChange),
+                            onGameDestroy: (handleGameDestroy) => eventHandler.listen('game:destroy', handleGameDestroy),
                             unlisten: () => {
                                 eventHandler.unlisten('game:playerJoined');
                                 eventHandler.unlisten('game:playerQuit');
@@ -43,34 +40,32 @@ const initApi = (eventHandler: EventHandler): IApi => {
                             }
                         }),
                         getLobbyIO: () => ({
-                            emitSetReady: () => eventHandler.emit('game:setReady'),
-                            onPlayerReadyChange: (handlePlayerReadyChange: ((playerId: string, newReadyState: boolean) => void)) => eventHandler.listen('game:playerReadyChange', ({ playerId, newReadyState }) => handlePlayerReadyChange(playerId, newReadyState)),
+                            emitSetReady: () => { eventHandler.emit('game:setReady'); },
+                            onPlayerReadyChange: (handlePlayerReadyChange) => eventHandler.listen('game:playerReadyChange', ({ playerId, newReadyState }) => handlePlayerReadyChange(playerId, newReadyState)),
                             unlisten: () => {
-                                eventHandler.unlisten('game:setReady');
                                 eventHandler.unlisten('game:playerReadyChange');
                             }
                         }),
                         getActiveIO: () => ({
                             getConjugationRaceIO: () => ({
-                                onLeaderboardChange: (handleLeaderboardChange: ((orderedNames: LeaderboardValue[]) => void)) => eventHandler.listen('game:conjugationRace:leaderboardChange', (newOrderedNames) => handleLeaderboardChange(newOrderedNames)),
-                                onVerbsSeenChange: (handleVerbsSeenChange: ((verbsSeen: number) => void)) => eventHandler.listen('game:conjugationRace:verbsSeenChange', (newVerbsSeen) => handleVerbsSeenChange(newVerbsSeen)),
-                                onVerbsCorrectChange: (handleVerbsCorrectChange: ((verbsCorrect: number) => void)) => eventHandler.listen('game:conjugationRace:verbsCorrectChange', (newVerbsCorrect) => handleVerbsCorrectChange(newVerbsCorrect)),
-                                onVerbsIncorrectChange: (handleVerbsIncorrectChange: ((correctAnswer: string, verbsIncorrect: number) => void)) => eventHandler.listen('game:conjugationRace:verbsIncorrectChange', ({ correctAnswer, newVerbsIncorrect }) => handleVerbsIncorrectChange(correctAnswer, newVerbsIncorrect)),
-                                onGameStart: (handleGameStart: ((firstVerb: Verb) => void)) => eventHandler.listen('game:conjugationRace:gameStart', (firstVerb) => handleGameStart(firstVerb)),
-                                emitSubmitAnswer: (answer: string) => eventHandler.emit<Verb>('game:conjugationRace:submitAnswer', answer),
+                                onLeaderboardChange: (handleLeaderboardChange) => eventHandler.listen('game:conjugationRace:leaderboardChange', handleLeaderboardChange),
+                                onVerbsSeenChange: (handleVerbsSeenChange) => eventHandler.listen('game:conjugationRace:verbsSeenChange', handleVerbsSeenChange),
+                                onVerbsCorrectChange: (handleVerbsCorrectChange) => eventHandler.listen('game:conjugationRace:verbsCorrectChange', handleVerbsCorrectChange),
+                                onVerbsIncorrectChange: (handleVerbsIncorrectChange) => eventHandler.listen('game:conjugationRace:verbsIncorrectChange', ({ correctAnswer, newVerbsIncorrect }) => handleVerbsIncorrectChange(correctAnswer, newVerbsIncorrect)),
+                                onGameStart: (handleGameStart) => eventHandler.listen('game:conjugationRace:gameStart', handleGameStart),
+                                emitSubmitAnswer: (answer: string) => eventHandler.emit('game:conjugationRace:submitAnswer', answer),
                                 unlisten: () => {
                                     eventHandler.unlisten('game:conjugationRace:leaderboardChange');
                                     eventHandler.unlisten('game:conjugationRace:verbsSeenChange');
                                     eventHandler.unlisten('game:conjugationRace:verbsCorrectChange');
                                     eventHandler.unlisten('game:conjugationRace:verbsIncorrectChange');
                                     eventHandler.unlisten('game:conjugationRace:gameStart');
-                                    eventHandler.unlisten('game:conjugationRace:submitAnswer');
                                 }
                             })
                         })
                     })
                 }
-            });
+            };
         }
     };
 }

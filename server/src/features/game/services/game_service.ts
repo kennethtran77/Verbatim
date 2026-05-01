@@ -1,6 +1,7 @@
 import { GameFactory } from "./game_factory";
 import { GameRepository } from "./game_repository";
 import Response from "../../../../../shared/response";
+import { ServerToClientEvents } from "../../../../../shared/events";
 import { Tense } from "../models/tenses";
 import { Game, GameMode, Duration, GameState } from "../models/game";
 import { Player } from "../models/player";
@@ -25,7 +26,11 @@ export interface GameService {
     /** Converts a player to the subclass corresponding with the gamemode */
     convertPlayer: (player: Player, gameMode: GameMode) => Response<Player>;
     /** Emits data to all players in a game */
-    emitToGame: (eventName: string, gameCode: string, data?: any) => void;
+    emitToGame<K extends keyof ServerToClientEvents>(
+        eventName: K,
+        gameCode: string,
+        ...args: Parameters<ServerToClientEvents[K]>
+    ): void;
     setGameCounter: (game: Game, newCounter: number) => void;
     setGameState: (game: Game, newGameState: GameState) => void;
     startGameCountdown: (game: Game, logger?: Logger) => void;
@@ -129,8 +134,8 @@ const createGameService = (
             game.players.delete(player);
             return newPlayerRes;
         },
-        emitToGame(eventName, gameCode, data) {
-            eventEmitter.emit(eventName, gameCode, data);
+        emitToGame(eventName, gameCode, ...args) {
+            eventEmitter.emit(eventName, gameCode, ...args);
         },
         setGameState(game, newGameState) {
             game.state = newGameState;

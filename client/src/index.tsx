@@ -1,16 +1,18 @@
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
-import { io } from 'socket.io-client';
+import { io, Socket } from 'socket.io-client';
 import IApi from './api';
 import initApi from './api/api';
 import { EventHandler, initSocketIOEventHandler } from './api/event_handler';
 import App from './App';
+import { ClientToServerEvents, ServerToClientEvents } from '../../shared/events';
 
 import { ServiceProvider } from './contexts/services';
 
 // initialize dependencies
 const url = process.env.REACT_APP_API_URL ?? `${window.location.origin}/api`;
-const eventHandler: EventHandler = initSocketIOEventHandler(io(url));
+const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(url);
+const eventHandler: EventHandler = initSocketIOEventHandler(socket);
 const api: IApi = initApi(eventHandler);
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);

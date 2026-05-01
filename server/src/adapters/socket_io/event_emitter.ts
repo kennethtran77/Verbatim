@@ -1,8 +1,11 @@
 import { Namespace } from "socket.io";
+import { ClientToServerEvents, ServerToClientEvents } from "../../../../shared/events";
 import { EventEmitterService } from "../../ports/event_emitter";
 
-export const createSocketIOEventEmitter = (io: Namespace): EventEmitterService => ({
-    emit(eventName, gameCode, data) {
-        io.in(gameCode).emit(eventName, data);
+export const createSocketIOEventEmitter = (
+    io: Namespace<ClientToServerEvents, ServerToClientEvents>
+): EventEmitterService => ({
+    emit(eventName, gameCode, ...args) {
+        io.in(gameCode).emit(eventName, ...args);
     },
 });
