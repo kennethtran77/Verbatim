@@ -5,8 +5,14 @@ export class Player implements PlayerShape {
     id: string;
     gameCode: string;
     username: string;
+
+    constructor(id: string, gameCode: string, username: string) {
+        this.id = id;
+        this.gameCode = gameCode;
+        this.username = username;
+    }
 }
 
 export class LobbyPlayer extends Player implements LobbyPlayerShape {
-    ready: boolean;
+    ready: boolean = false;
 }

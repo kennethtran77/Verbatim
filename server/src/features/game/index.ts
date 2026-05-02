@@ -70,10 +70,12 @@ export const createGameContext = (
         liveGameRepository,
         createGameFactory(
             createGameCodeGenerator((gameCode: string) => Boolean(gameService.getGame(gameCode).data)),
+            eventEmitter,
             createConjugationRaceGameFactory(
+                eventEmitter,
+                createVerbService(),
                 conjugationRaceRepository,
-                createVerbService()
-            )
+            ),
         ),
         createPlayerFactory(
             createLobbyPlayerFactory(),

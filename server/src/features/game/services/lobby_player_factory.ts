@@ -1,14 +1,6 @@
-import { LobbyPlayer, Player } from "../models/player";
+import { LobbyPlayer } from "../models/player";
 
-export type LobbyPlayerFactory = (player: Player) => LobbyPlayer;
+export type LobbyPlayerFactory = (id: string, gameCode: string, username: string) => LobbyPlayer;
 
-export const createLobbyPlayerFactory = (): LobbyPlayerFactory => {
-    return (player) =>
-        Object.setPrototypeOf(
-        {
-            ...player,
-            ready: false
-        },
-        LobbyPlayer.prototype
-    )
-};
+export const createLobbyPlayerFactory = (): LobbyPlayerFactory =>
+    (id, gameCode, username) => new LobbyPlayer(id, gameCode, username);

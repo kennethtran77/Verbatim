@@ -1,57 +1,72 @@
-import { ConjugationRaceServices } from "..";
-import { GameService } from "../../game/services/game_service";
 import { Game } from "../../game/models/game";
+import { GameSettings } from "../../../../../shared/game";
+import { Player } from "../../game/models/player";
 import { ConjugationRacePlayer } from "./player";
 import { LeaderboardValue, Verb, VerbResponse } from "../../../../../shared/conjugation_race";
+import { EventEmitterService } from "../../../ports/event_emitter";
+import { VerbService } from "../services/verb_service";
+import { ConjugationRaceRepository } from "../ports/repository";
 
 export { LeaderboardValue, Verb, VerbResponse, Subject } from "../../../../../shared/conjugation_race";
 
 export class ConjugationRaceGame extends Game {
-    /** A list of players sorted by verbs most correctly answered */
-    leaderboard: ConjugationRacePlayer[];
+    /** A list of players sorted by verbs most correctly answered. */
+    leaderboard: ConjugationRacePlayer[] = [];
     verbList: Verb[];
 
-    /**
-     * Updates the leaderboard.
-     */
-    updateLeaderboard(gameService: GameService) {
-        const comparator = (player1: ConjugationRacePlayer, player2: ConjugationRacePlayer) => player2.verbsCorrect - player1.verbsCorrect;
+    constructor(
+        eventEmitter: EventEmitterService,
+        private verbService: VerbService,
+        private repository: ConjugationRaceRepository,
+        code: string,
+        settings: GameSettings,
+    ) {
+        super(eventEmitter, code, settings);
+        this.verbList = verbService.generateUniqueVerbs(100, settings.tenses);
+    }
+
+    onStart(convertedPlayers: Player[]) {
+        super.onStart(convertedPlayers);
+        this.leaderboard = convertedPlayers as ConjugationRacePlayer[];
+        this.eventEmitter.emit('game:conjugationRace:gameStart', this.code, this.verbList[0]);
+    }
+
+    onEnd() {
+        super.onEnd();
+        this.repository.saveGameData(this);
+    }
+
+    /** Append additional verbs to the game's verb list. */
+    appendVerbs(verbs: Verb[]) {
+        this.verbList = this.verbList.concat(verbs);
+    }
+
+    /** Sort the leaderboard and emit the new ordering to all players. */
+    updateLeaderboard() {
+        const comparator = (a: ConjugationRacePlayer, b: ConjugationRacePlayer) => b.verbsCorrect - a.verbsCorrect;
         this.leaderboard.sort(comparator);
 
         const newLeaderboard: LeaderboardValue[] = this.leaderboard.map(player => ({
             playerName: player.username,
-            score: player.verbsCorrect
+            score: player.verbsCorrect,
         }));
 
-        gameService.emitToGame('game:conjugationRace:leaderboardChange', this.code, newLeaderboard);
+        this.eventEmitter.emit('game:conjugationRace:leaderboardChange', this.code, newLeaderboard);
     }
 
-    /**
-     * Increases the game's verb list.
-     */
-    increaseVerbList(conjugationRaceServices: ConjugationRaceServices) {
-        this.verbList = this.verbList.concat(conjugationRaceServices.verbService.generateUniqueVerbs(100, this.settings.tenses));
+    /** Generate more verbs and append them to the verb list. */
+    increaseVerbList() {
+        this.appendVerbs(this.verbService.generateUniqueVerbs(100, this.settings.tenses));
     }
 
-    /**
-     * Handles a player's input.
-     * @returns whether the player was correct
-     */
-    handlePlayerInput(
-        gameService: GameService,
-        conjugationRaceServices: ConjugationRaceServices,
-        player: ConjugationRacePlayer,
-        currentVerb: Verb,
-        input: string
-    ) {
-        // Increment player's verbs seen count
+    /** Process a player's input. Returns whether the answer was correct. */
+    handlePlayerInput(player: ConjugationRacePlayer, currentVerb: Verb, input: string): boolean {
         player.verbsSeen += 1;
-        gameService.emitToGame('game:conjugationRace:verbsSeenChange', player.id, player.verbsSeen);
+        this.eventEmitter.emit('game:conjugationRace:verbsSeenChange', player.id, player.verbsSeen);
 
-        // strip verbs of accents
-        const correctAnswer = conjugationRaceServices.verbService.conjugateVerb(currentVerb);
-        const correctAnswerNoAccent = correctAnswer.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
-        const userAnswer = input.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+        const correctAnswer = this.verbService.conjugateVerb(currentVerb);
+        const correctAnswerNoAccent = correctAnswer.normalize('NFD').replace(/[̀-ͯ]/g, "");
+        const userAnswer = input.normalize('NFD').replace(/[̀-ͯ]/g, "");
 
         const correct = correctAnswerNoAccent === userAnswer;
 
@@ -60,21 +75,20 @@ export class ConjugationRaceGame extends Game {
             input,
             correctAnswer,
             isInputCorrect: correct,
-            answerTime: new Date()
+            answerTime: new Date(),
         };
         player.verbResponses.push(verbResponse);
 
         if (correct) {
             player.verbsCorrect += 1;
-            gameService.emitToGame('game:conjugationRace:verbsCorrectChange', player.id, player.verbsCorrect);
+            this.eventEmitter.emit('game:conjugationRace:verbsCorrectChange', player.id, player.verbsCorrect);
         } else {
             player.verbsIncorrect += 1;
-            gameService.emitToGame('game:conjugationRace:verbsIncorrectChange', player.id, { correctAnswer: correctAnswer, newVerbsIncorrect: player.verbsIncorrect });
+            this.eventEmitter.emit('game:conjugationRace:verbsIncorrectChange', player.id, { correctAnswer, newVerbsIncorrect: player.verbsIncorrect });
         }
 
-        // generate more verbs if the player has seen all generated verbs
         if (player.verbsSeen >= this.verbList.length) {
-            this.increaseVerbList(conjugationRaceServices);
+            this.increaseVerbList();
         }
 
         return correct;

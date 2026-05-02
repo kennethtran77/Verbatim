@@ -138,40 +138,48 @@ const createGameService = (
             eventEmitter.emit(eventName, gameCode, ...args);
         },
         setGameState(game, newGameState) {
-            game.state = newGameState;
-            this.emitToGame('game:stateChange', game.code, newGameState);
+            game.setState(newGameState);
         },
         setGameCounter(game, newCounter) {
-            game.counter = newCounter;
-            this.emitToGame('game:counterChange', game.code, game.counter);
+            game.setCounter(newCounter);
         },
         startGameCountdown(game, logger) {
             logger && logger.info(`Game ${game.code} starting`);
-    
-            this.setGameCounter(game, initialStartCounter);
-            this.setGameState(game, 'starting');
-    
+
+            game.setCounter(initialStartCounter);
+            game.setState('starting');
+
             const timer: NodeJS.Timer = setInterval(() => {
                 if (game.state !== 'starting') {
                     clearInterval(timer);
                     return;
                 }
-    
+
                 if (game.counter === 1) {
                     clearInterval(timer);
-                    this.setGameState(game, 'active');
-                    game.onStart(this);
+                    game.setState('active');
+
+                    // Convert lobby players into game-mode-specific players
+                    const convertedPlayers: Player[] = [];
+                    Array.from(game.players).forEach(player => {
+                        const convertedRes = this.convertPlayer(player, game.settings.mode as GameMode);
+                        if (convertedRes.data) {
+                            convertedPlayers.push(convertedRes.data);
+                        }
+                    });
+
+                    game.onStart(convertedPlayers);
                     return;
                 }
-    
-                this.setGameCounter(game, game.counter - 1);
+
+                game.setCounter(game.counter - 1);
             }, 1000);
         },
         stopGameCountdown(game, logger) {
             logger && logger.info(`Game ${game.code} stopping`);
 
-            this.setGameState(game, 'waiting');
-            this.setGameCounter(game, initialStartCounter);
+            game.setState('waiting');
+            game.setCounter(initialStartCounter);
         }
     };
 };

@@ -7,7 +7,7 @@ import { ClientToServerEvents, ServerToClientEvents } from '../../shared/events'
 import dotenv from 'dotenv';
 import { Pool } from 'pg';
 import { createGameEvents, createGameContext, Repositories } from './features/game';
-import { createConjugationRaceEvents, createConjugationRaceServices } from './features/conjugation-race';
+import { createConjugationRaceEvents } from './features/conjugation-race';
 import createGameEventBinder from './features/game/controllers/socket';
 import createGameRouteBinder from './features/game/controllers/rest';
 import { createConjugationRaceEventBinder } from './features/conjugation-race/controllers/socket';
@@ -77,7 +77,6 @@ const repositories: Repositories = {
 
 // Feature services
 const gameContext = createGameContext(env, eventEmitter, repositories);
-const conjugationRaceServices = createConjugationRaceServices(conjugationRaceRepository);
 
 // Socket.IO: bind event handlers per connection
 gameNamespace.on('connection', (socket: Socket<ClientToServerEvents, ServerToClientEvents>) => {
@@ -86,7 +85,7 @@ gameNamespace.on('connection', (socket: Socket<ClientToServerEvents, ServerToCli
     const eventListener: EventListenerService = createSocketIOEventListener(socket);
 
     const gameEvents = createGameEvents(eventListener, gameContext);
-    const conjugationRaceEvents = createConjugationRaceEvents(gameContext, conjugationRaceServices);
+    const conjugationRaceEvents = createConjugationRaceEvents(gameContext);
 
     createGameEventBinder(gameContext, gameEvents)(eventListener);
     createConjugationRaceEventBinder(conjugationRaceEvents)(eventListener);

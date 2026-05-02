@@ -1,18 +1,6 @@
-import { Player } from "../../game/models/player";
 import { ConjugationRacePlayer } from "../models/player";
 
-export type ConjugationRacePlayerFactory = (player: Player) => ConjugationRacePlayer;
+export type ConjugationRacePlayerFactory = (id: string, gameCode: string, username: string) => ConjugationRacePlayer;
 
-export const createConjugationRacePlayerFactory = (): ConjugationRacePlayerFactory => {
-    return (player) =>
-        Object.setPrototypeOf(
-        {
-            ...player,
-            verbsSeen: 1,
-            verbsCorrect: 0,
-            verbsIncorrect: 0,
-            verbResponses: []
-        },
-        ConjugationRacePlayer.prototype
-    );
-};
+export const createConjugationRacePlayerFactory = (): ConjugationRacePlayerFactory =>
+    (id, gameCode, username) => new ConjugationRacePlayer(id, gameCode, username);

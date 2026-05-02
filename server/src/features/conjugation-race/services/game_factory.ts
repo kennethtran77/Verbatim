@@ -1,48 +1,16 @@
-import { ConjugationRaceGame, Verb } from "../models/conjugation_race";
-import { Game } from "../../game/models/game";
-import { Player } from "../../game/models/player";
-import { ConjugationRacePlayer } from "../models/player";
-import { GameService } from "../../game/services/game_service";
+import { ConjugationRaceGame } from "../models/conjugation_race";
+import { GameSettings } from "../../game/models/game";
 import { VerbService } from "./verb_service";
-import Response from "../../../../../shared/response";
 import { ConjugationRaceRepository } from "../ports/repository";
+import { EventEmitterService } from "../../../ports/event_emitter";
 
-export type ConjugationRaceGameFactory = (game: Game) => ConjugationRaceGame;
+export type ConjugationRaceGameFactory = (code: string, settings: GameSettings) => ConjugationRaceGame;
 
 const createConjugationRaceGameFactory = (
+    eventEmitter: EventEmitterService,
+    verbService: VerbService,
     repository: ConjugationRaceRepository,
-    verbService: VerbService
-): ConjugationRaceGameFactory => {
-    return (game) => {
-        const leaderboard: ConjugationRacePlayer[] = [];
-        // TODO change amount to be dynamic
-        const verbList: Verb[] = verbService.generateUniqueVerbs(100, game.settings.tenses);
-    
-        return Object.setPrototypeOf({
-            ...game,
-            leaderboard,
-            verbList,
-            onStart(gameService: GameService) {
-                game.onStart.call(this, gameService);
-                gameService.emitToGame('game:conjugationRace:gameStart', game.code, verbList[0]);
-
-                // convert each player to a ConjugationRacePlayer and add them to leaderboard
-                this.players.forEach((player: Player) => {
-                    const convertedPlayerRes: Response<Player> = gameService.convertPlayer(player, 'conjugation-race');
-
-                    if (!convertedPlayerRes.data) {
-                        return;
-                    }
-
-                    leaderboard.push(convertedPlayerRes.data as ConjugationRacePlayer);
-                });
-            },
-            onEnd(gameService: GameService) {
-                game.onEnd.call(this, gameService);
-                repository.saveGameData(this);
-            }
-        }, ConjugationRaceGame.prototype);
-    }
-}
+): ConjugationRaceGameFactory =>
+    (code, settings) => new ConjugationRaceGame(eventEmitter, verbService, repository, code, settings);
 
 export default createConjugationRaceGameFactory;

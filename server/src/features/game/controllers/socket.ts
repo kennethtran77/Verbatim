@@ -1,12 +1,12 @@
-import { GameEvents, GameServices } from "..";
+import { GameEvents, GameContext } from "..";
 import { EventBinder, EventListenerService } from "../../../ports/event_listener";
 
 const createGameEventBinder = (
-    services: GameServices,
+    gameContext: GameContext,
     events: GameEvents
 ): EventBinder => (eventListener: EventListenerService) => {
     eventListener.listen("game:getPlayer", (playerId) => {
-        return services.gameService.getPlayer(playerId);
+        return gameContext.gameService.getPlayer(playerId);
     });
 
     eventListener.listen('game:getStatus', (playerId, { gameCode }) => {
