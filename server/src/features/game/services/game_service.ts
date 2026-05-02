@@ -1,5 +1,5 @@
 import { GameFactory } from "./game_factory";
-import { GameRepository } from "./game_repository";
+import { LiveGameRepository } from "./live_repository";
 import Response from "../../../../../shared/response";
 import { ServerToClientEvents } from "../../../../../shared/events";
 import { Tense } from "../models/tenses";
@@ -38,7 +38,7 @@ export interface GameService {
 }
 
 const createGameService = (
-    gameRepository: GameRepository,
+    liveRepository: LiveGameRepository,
     gameFactory: GameFactory,
     playerFactory: PlayerFactory,
     eventEmitter: EventEmitterService
@@ -47,13 +47,13 @@ const createGameService = (
 
     return {
         removePlayer(playerId) {
-            const player = gameRepository.getPlayer(playerId).data as Player;
-            const game = gameRepository.getGame(player.gameCode).data as Game;
+            const player = liveRepository.getPlayer(playerId).data as Player;
+            const game = liveRepository.getGame(player.gameCode).data as Game;
             game.players.delete(player);
-            return gameRepository.removePlayer(playerId);
+            return liveRepository.removePlayer(playerId);
         },
         removeGame(gameCode) {
-            const getGameRes: Response<Game> = gameRepository.getGame(gameCode);
+            const getGameRes: Response<Game> = liveRepository.getGame(gameCode);
 
             if (!getGameRes.data) {
                 return getGameRes;
@@ -64,23 +64,23 @@ const createGameService = (
             // remove all players from the game
             game.players.forEach(player => {
                 game.players.delete(player);
-                gameRepository.removePlayer(player.id);
+                liveRepository.removePlayer(player.id);
             });
 
             // remove the game
-            return gameRepository.removeGame(gameCode);
+            return liveRepository.removeGame(gameCode);
         },
         getPlayer(playerId) {
-            return gameRepository.getPlayer(playerId);
+            return liveRepository.getPlayer(playerId);
         },
         getGame(gameCode) {
-            return gameRepository.getGame(gameCode);
+            return liveRepository.getGame(gameCode);
         },
         createGame(mode, duration, tenses) {
             const createGameRes: Response<Game> = gameFactory(mode, duration, tenses);
 
             if (createGameRes.data) {
-                gameRepository.addGame(createGameRes.data);
+                liveRepository.addGame(createGameRes.data);
             }
 
             return createGameRes;
@@ -91,7 +91,7 @@ const createGameService = (
             if (createPlayerRes.data) {
                 const newPlayer: Player = createPlayerRes.data;
 
-                gameRepository.addPlayer(newPlayer);
+                liveRepository.addPlayer(newPlayer);
                 // add player to set in game object
                 game.players.add(newPlayer);
             }
@@ -107,8 +107,8 @@ const createGameService = (
 
             // add new game to repository
             const newGame: Game = newGameRes.data;
-            gameRepository.removeGame(game.code);
-            gameRepository.addGame(newGame);
+            liveRepository.removeGame(game.code);
+            liveRepository.addGame(newGame);
 
             return newGameRes;
         },
@@ -121,9 +121,9 @@ const createGameService = (
 
             // add new player to repository
             const newPlayer: Player = newPlayerRes.data;
-            gameRepository.removePlayer(player.id)
-            gameRepository.addPlayer(newPlayer);
-            const gameRes: Response<Game> = gameRepository.getGame(player.gameCode);
+            liveRepository.removePlayer(player.id);
+            liveRepository.addPlayer(newPlayer);
+            const gameRes: Response<Game> = liveRepository.getGame(player.gameCode);
 
             if (!gameRes.data) {
                 return gameRes as Response as Response<Player>;

@@ -30,7 +30,7 @@ export class ConjugationRaceGame extends Game {
      * Increases the game's verb list.
      */
     increaseVerbList(conjugationRaceServices: ConjugationRaceServices) {
-        this.verbList = this.verbList.concat(conjugationRaceServices.getVerbService().generateUniqueVerbs(100, this.settings.tenses));
+        this.verbList = this.verbList.concat(conjugationRaceServices.verbService.generateUniqueVerbs(100, this.settings.tenses));
     }
 
     /**
@@ -49,7 +49,7 @@ export class ConjugationRaceGame extends Game {
         gameService.emitToGame('game:conjugationRace:verbsSeenChange', player.id, player.verbsSeen);
 
         // strip verbs of accents
-        const correctAnswer = conjugationRaceServices.getVerbService().conjugateVerb(currentVerb);
+        const correctAnswer = conjugationRaceServices.verbService.conjugateVerb(currentVerb);
         const correctAnswerNoAccent = correctAnswer.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
         const userAnswer = input.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
 

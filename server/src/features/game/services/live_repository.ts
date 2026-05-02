@@ -3,7 +3,7 @@ import { Player } from "../models/player";
 import Response from "../../../../../shared/response";
 
 /** Holds players and games and ways to add, remove, and fetch them. */
-export interface GameRepository {
+export interface LiveGameRepository {
     /** Add a player to the game store. Returns whether add was successful. */
     addPlayer: (player: Player) => Response;
     /** Removes a player from the game store. Returns whether remove was successful. */
@@ -16,8 +16,8 @@ export interface GameRepository {
     getGame: (gameCode: string) => Response<Game>;
 }
 
-/** Returns a GameStore that uses memory and the Map data structure. */
-const createMemGameRepository = (): GameRepository => {
+/** Returns a repository of live games that uses memory and the Map data structure. */
+const createMemLiveGameRepository = (): LiveGameRepository => {
     /** A map of active games */
     const games: Map<string, Game> = new Map();
     /** A map of player ids to player objects */
@@ -91,4 +91,4 @@ const createMemGameRepository = (): GameRepository => {
     };
 };
 
-export default createMemGameRepository;
+export default createMemLiveGameRepository;

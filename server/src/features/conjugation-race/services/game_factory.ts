@@ -5,12 +5,12 @@ import { ConjugationRacePlayer } from "../models/player";
 import { GameService } from "../../game/services/game_service";
 import { VerbService } from "./verb_service";
 import Response from "../../../../../shared/response";
-import { ConjugationRaceDbService } from "./db";
+import { ConjugationRaceRepository } from "../ports/repository";
 
 export type ConjugationRaceGameFactory = (game: Game) => ConjugationRaceGame;
 
 const createConjugationRaceGameFactory = (
-    dbService: ConjugationRaceDbService,
+    repository: ConjugationRaceRepository,
     verbService: VerbService
 ): ConjugationRaceGameFactory => {
     return (game) => {
@@ -39,7 +39,7 @@ const createConjugationRaceGameFactory = (
             },
             onEnd(gameService: GameService) {
                 game.onEnd.call(this, gameService);
-                dbService.saveGameData(this);
+                repository.saveGameData(this);
             }
         }, ConjugationRaceGame.prototype);
     }
