@@ -1,150 +1,114 @@
 import { GameFactory } from "./game_factory";
 import { LiveGameRepository } from "./live_repository";
 import Response from "../../../../../shared/response";
-import { ServerToClientEvents } from "../../../../../shared/events";
 import { Tense } from "../models/tenses";
-import { Game, GameMode, Duration, GameState } from "../models/game";
+import { Game, GameMode, Duration } from "../models/game";
 import { Player } from "../models/player";
 import { PlayerFactory } from "./player_factory";
 import { Logger } from "../../../ports/logger";
-import { EventEmitterService } from "../../../ports/event_emitter";
 
-/** Handles life cycle of games and players. */
-export interface GameService {
-    /** Removes a player from the game repository. Returns whether remove was successful. */
+/** Coordinates the lifecycle of live games and players (creation, conversion, removal, countdowns). */
+export interface LiveGameService {
+    /** Removes a player from the game (entity) and the live repository. */
     removePlayer: (playerId: string) => Response;
-    /** Removes a game from the game repository. Returns whether remove was successful. */
+    /** Removes a game from the live repository, cascading player removal and notifying clients. */
     removeGame: (gameCode: string) => Response;
-    getPlayer: (playerId: string) => Response<Player>;
-    getGame: (gameCode: string) => Response<Game>;
-    /** Creates a game, registers it in the game repository, and returns it */
+    /** Creates a game, registers it in the live repository, and returns it. */
     createGame: (mode: GameMode, duration: Duration, tenses: Tense[]) => Response<Game>;
-    /** Creates a player, registers it in the game repository, and returns it */
+    /** Creates a player, registers it in the live repository, and adds them to the game. */
     createPlayer: (playerId: string, game: Game, username: string, mode: GameMode | 'lobby') => Response<Player>;
     /** Converts a game to the subclass corresponding with the gamemode  */
     convertGame: (game: Game, gameMode: GameMode) => Response;
     /** Converts a player to the subclass corresponding with the gamemode */
     convertPlayer: (player: Player, gameMode: GameMode) => Response<Player>;
-    /** Emits data to all players in a game */
-    emitToGame<K extends keyof ServerToClientEvents>(
-        eventName: K,
-        gameCode: string,
-        ...args: Parameters<ServerToClientEvents[K]>
-    ): void;
-    setGameCounter: (game: Game, newCounter: number) => void;
-    setGameState: (game: Game, newGameState: GameState) => void;
+    /** Begins the pre-start countdown that transitions the game to 'active' */
     startGameCountdown: (game: Game, logger?: Logger) => void;
+    /** Cancels the pre-start countdown and resets the game to 'waiting' */
     stopGameCountdown: (game: Game, logger?: Logger) => void;
 }
 
-const createGameService = (
+const createLiveGameService = (
     liveRepository: LiveGameRepository,
     gameFactory: GameFactory,
     playerFactory: PlayerFactory,
-    eventEmitter: EventEmitterService
-): GameService => {
+): LiveGameService => {
     const initialStartCounter = 5;
 
     return {
         removePlayer(playerId) {
-            const player = liveRepository.getPlayer(playerId).data as Player;
-            const game = liveRepository.getGame(player.gameCode).data as Game;
-            game.players.delete(player);
+            const playerRes = liveRepository.getPlayer(playerId);
+            const player = playerRes.data;
+            if (!player) return playerRes;
+
+            const game = liveRepository.getGame(player.gameCode).data;
+            if (game) {
+                game.removePlayer(playerId);
+            }
             return liveRepository.removePlayer(playerId);
         },
+
         removeGame(gameCode) {
             const getGameRes: Response<Game> = liveRepository.getGame(gameCode);
+            if (!getGameRes.data) return getGameRes;
 
-            if (!getGameRes.data) {
-                return getGameRes;
-            }
+            const game = getGameRes.data;
 
-            const game: Game = getGameRes.data;
-
-            // remove all players from the game
             game.players.forEach(player => {
-                game.players.delete(player);
                 liveRepository.removePlayer(player.id);
             });
+            game.players.clear();
 
-            // remove the game
+            game.notifyDestroyed();
             return liveRepository.removeGame(gameCode);
         },
-        getPlayer(playerId) {
-            return liveRepository.getPlayer(playerId);
-        },
-        getGame(gameCode) {
-            return liveRepository.getGame(gameCode);
-        },
-        createGame(mode, duration, tenses) {
-            const createGameRes: Response<Game> = gameFactory(mode, duration, tenses);
 
+        createGame(mode, duration, tenses) {
+            const createGameRes = gameFactory(mode, duration, tenses);
             if (createGameRes.data) {
                 liveRepository.addGame(createGameRes.data);
             }
-
             return createGameRes;
         },
+
         createPlayer(playerId, game, username, mode) {
-            const createPlayerRes: Response<Player> = playerFactory(playerId, game.code, username, mode);
-
+            const createPlayerRes = playerFactory(playerId, game.code, username, mode);
             if (createPlayerRes.data) {
-                const newPlayer: Player = createPlayerRes.data;
-
+                const newPlayer = createPlayerRes.data;
                 liveRepository.addPlayer(newPlayer);
-                // add player to set in game object
-                game.players.add(newPlayer);
+                game.addPlayer(newPlayer);
             }
-
             return createPlayerRes;
         },
+
         convertGame(game, gameMode) {
-            const newGameRes: Response<Game> = gameFactory(gameMode, game.settings.duration, game.settings.tenses);
+            const newGameRes = gameFactory(gameMode, game.settings.duration, game.settings.tenses);
+            if (!newGameRes.data) return newGameRes;
 
-            if (!newGameRes.data) {
-                return newGameRes;
-            }
-
-            // add new game to repository
-            const newGame: Game = newGameRes.data;
+            const newGame = newGameRes.data;
             liveRepository.removeGame(game.code);
             liveRepository.addGame(newGame);
-
             return newGameRes;
         },
+
         convertPlayer(player, gameMode) {
-            const newPlayerRes: Response<Player> = playerFactory(player.id, player.gameCode, player.username, gameMode);
+            const newPlayerRes = playerFactory(player.id, player.gameCode, player.username, gameMode);
+            if (!newPlayerRes.data) return newPlayerRes;
 
-            if (!newPlayerRes.data) {
-                return newPlayerRes;
-            }
-
-            // add new player to repository
-            const newPlayer: Player = newPlayerRes.data;
+            const newPlayer = newPlayerRes.data;
             liveRepository.removePlayer(player.id);
             liveRepository.addPlayer(newPlayer);
-            const gameRes: Response<Game> = liveRepository.getGame(player.gameCode);
 
+            const gameRes = liveRepository.getGame(player.gameCode);
             if (!gameRes.data) {
                 return gameRes as Response as Response<Player>;
             }
-
-            // remove player from game's set of players
-            const game: Game = gameRes.data;
+            const game = gameRes.data;
             game.players.delete(player);
             return newPlayerRes;
         },
-        emitToGame(eventName, gameCode, ...args) {
-            eventEmitter.emit(eventName, gameCode, ...args);
-        },
-        setGameState(game, newGameState) {
-            game.setState(newGameState);
-        },
-        setGameCounter(game, newCounter) {
-            game.setCounter(newCounter);
-        },
+
         startGameCountdown(game, logger) {
-            logger && logger.info(`Game ${game.code} starting`);
+            logger?.info(`Game ${game.code} starting`);
 
             game.setCounter(initialStartCounter);
             game.setState('starting');
@@ -175,13 +139,14 @@ const createGameService = (
                 game.setCounter(game.counter - 1);
             }, 1000);
         },
+
         stopGameCountdown(game, logger) {
-            logger && logger.info(`Game ${game.code} stopping`);
+            logger?.info(`Game ${game.code} stopping`);
 
             game.setState('waiting');
             game.setCounter(initialStartCounter);
-        }
+        },
     };
 };
 
-export default createGameService;
+export default createLiveGameService;

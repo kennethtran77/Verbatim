@@ -1,6 +1,6 @@
 import { Duration, Game } from "../models/game";
 import Response from "../../../../../shared/response";
-import { GameService } from "../services/game_service";
+import { LiveGameService } from "../services/live_game_service";
 import { TenseStore } from "../services/tense_store";
 
 export type CreateGameEvent = (mode: string, duration: Duration, tenses: string[], maxPlayers: number) => Response<string>;
@@ -8,7 +8,7 @@ export type CreateGameEvent = (mode: string, duration: Duration, tenses: string[
 const createCreateGameEvent = (
     gameModes: string[],
     tenseStore: TenseStore,
-    gameService: GameService
+    liveGameService: LiveGameService,
 ): CreateGameEvent => {
     return (mode, duration, tenses, maxPlayers) => {
         // validate input
@@ -68,7 +68,7 @@ const createCreateGameEvent = (
         }
 
         // create a new game object
-        const createGameRes: Response<Game> = gameService.createGame(mode, duration, tenseItems);
+        const createGameRes: Response<Game> = liveGameService.createGame(mode, duration, tenseItems);
         const newGame = createGameRes.data;
 
         if (newGame) {

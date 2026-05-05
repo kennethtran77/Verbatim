@@ -8,5 +8,5 @@ export interface ConjugationRaceEvents {
 export const createConjugationRaceEvents = (
     gameContext: GameContext,
 ): ConjugationRaceEvents => ({
-    handleSubmitAnswer: createSubmitAnswerEvent(gameContext.gameService),
+    handleSubmitAnswer: createSubmitAnswerEvent(gameContext.liveRepository),
 });

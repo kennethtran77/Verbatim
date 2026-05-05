@@ -3,15 +3,15 @@ import { Game } from "../../game/models/game";
 import { Player } from "../../game/models/player";
 import { ConjugationRacePlayer } from "../models/player";
 import Response from "../../../../../shared/response";
-import { GameService } from "../../game/services/game_service";
+import { LiveGameRepository } from "../../game/services/live_repository";
 
 export type SubmitAnswerEvent = (playerId: string, answer: string) => Response<Verb>;
 
 const createSubmitAnswerEvent = (
-    gameService: GameService,
+    liveRepository: LiveGameRepository,
 ): SubmitAnswerEvent => {
     return (playerId, answer) => {
-        const getPlayerRes: Response<Player> = gameService.getPlayer(playerId);
+        const getPlayerRes: Response<Player> = liveRepository.getPlayer(playerId);
 
         if (!getPlayerRes.data) {
             return getPlayerRes as Response as Response<Verb>;
@@ -26,7 +26,7 @@ const createSubmitAnswerEvent = (
             };
         }
 
-        const getGameRes: Response<Game> = gameService.getGame(player.gameCode);
+        const getGameRes: Response<Game> = liveRepository.getGame(player.gameCode);
 
         if (!getGameRes.data) {
             return getPlayerRes as Response as Response<Verb>;

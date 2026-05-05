@@ -8,7 +8,7 @@ import { createConjugationRacePlayerFactory } from '../conjugation-race/services
 import createVerbService from '../conjugation-race/services/verb_service';
 import createGameCodeGenerator, { GameCodeGeneratorService } from './services/code_generator';
 import createGameFactory from './services/game_factory';
-import createGameService, { GameService } from './services/game_service';
+import createLiveGameService, { LiveGameService } from './services/live_game_service';
 import { LiveGameRepository } from './services/live_repository';
 import { createLobbyPlayerFactory } from './services/lobby_player_factory';
 import createUsernameGenerator, { UsernameGeneratorService } from './services/name_generator';
@@ -38,7 +38,8 @@ export interface Repositories {
 }
 
 export interface GameContext {
-    gameService: GameService;
+    liveGameService: LiveGameService;
+    liveRepository: LiveGameRepository;
     tenseStore: TenseStore;
     logger: Logger;
     generateGameCode: GameCodeGeneratorService;
@@ -50,26 +51,26 @@ const names: string[] = ["Apple", "Banana", "Pear", "Kiwi", "Grapefruit", "Water
 
 export const createGameEvents = (
     eventListener: EventListenerService,
-    context: GameContext
+    context: GameContext,
 ): GameEvents => ({
-    handleJoinGameEvent: createJoinGameEvent(eventListener, context.generateUsername, context.gameService, context.logger),
-    handleCreateGameEvent: createCreateGameEvent(gameModes, context.tenseStore, context.gameService),
-    handleQuitGameEvent: createQuitGameEvent(eventListener, context.gameService, context.logger),
-    handleGetGameStatusEvent: createGetGameStatusEvent(context.gameService),
-    handleSetReadyEvent: createSetReadyEvent(context.gameService),
+    handleJoinGameEvent: createJoinGameEvent(eventListener, context.generateUsername, context.liveGameService, context.liveRepository, context.logger),
+    handleCreateGameEvent: createCreateGameEvent(gameModes, context.tenseStore, context.liveGameService),
+    handleQuitGameEvent: createQuitGameEvent(eventListener, context.liveGameService, context.liveRepository, context.logger),
+    handleGetGameStatusEvent: createGetGameStatusEvent(context.liveRepository),
+    handleSetReadyEvent: createSetReadyEvent(context.liveGameService, context.liveRepository),
 });
 
 export const createGameContext = (
     env: 'prod' | 'dev',
     eventEmitter: EventEmitterService,
-    repositories: Repositories
+    repositories: Repositories,
 ): GameContext => {
-    const liveGameRepository: LiveGameRepository = repositories.liveGameRepository;
+    const liveRepository: LiveGameRepository = repositories.liveGameRepository;
     const conjugationRaceRepository: ConjugationRaceRepository = repositories.conjugationRaceRepository;
-    const gameService: GameService = createGameService(
-        liveGameRepository,
+    const liveGameService: LiveGameService = createLiveGameService(
+        liveRepository,
         createGameFactory(
-            createGameCodeGenerator((gameCode: string) => Boolean(gameService.getGame(gameCode).data)),
+            createGameCodeGenerator((gameCode: string) => Boolean(liveRepository.getGame(gameCode).data)),
             eventEmitter,
             createConjugationRaceGameFactory(
                 eventEmitter,
@@ -79,17 +80,17 @@ export const createGameContext = (
         ),
         createPlayerFactory(
             createLobbyPlayerFactory(),
-            createConjugationRacePlayerFactory()
+            createConjugationRacePlayerFactory(),
         ),
-        eventEmitter
     );
 
     return {
-        gameService,
+        liveGameService,
+        liveRepository,
         tenseStore: createTenseStore(tenses),
         logger: createConsoleLogger(env),
-        generateGameCode: createGameCodeGenerator((gameCode: string) => Boolean(gameService.getGame(gameCode).data)),
+        generateGameCode: createGameCodeGenerator((gameCode: string) => Boolean(liveRepository.getGame(gameCode).data)),
         generateUsername: createUsernameGenerator(names),
-        eventEmitter
+        eventEmitter,
     };
 };

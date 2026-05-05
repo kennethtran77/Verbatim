@@ -1,18 +1,18 @@
 import { GameState } from "../models/game";
 import Response from "../../../../../shared/response";
-import { GameService } from "../services/game_service";
+import { LiveGameRepository } from "../services/live_repository";
 
 export type GetGameStatusEvent = (gameCode: string) => Response<GameState>;
 
-const createGetGameStatusEvent = (gameService: GameService): GetGameStatusEvent => {
+const createGetGameStatusEvent = (liveRepository: LiveGameRepository): GetGameStatusEvent => {
     return (gameCode) => {
-        const getGameRes = gameService.getGame(gameCode);
+        const getGameRes = liveRepository.getGame(gameCode);
         const game = getGameRes.data;
 
         if (!game) {
             return {
                 success: false,
-                message: getGameRes.message
+                message: getGameRes.message,
             };
         }
 
@@ -25,15 +25,15 @@ const createGetGameStatusEvent = (gameService: GameService): GetGameStatusEvent 
                     return "The game has already started.";
                 case "ending":
                     return "The game is currently ending.";
-            };
+            }
         };
 
         return {
             success: true,
             message: getStateMessage(),
-            data: game.state
+            data: game.state,
         };
-    }
+    };
 };
 
 export default createGetGameStatusEvent;

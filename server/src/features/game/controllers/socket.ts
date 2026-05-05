@@ -6,7 +6,7 @@ const createGameEventBinder = (
     events: GameEvents
 ): EventBinder => (eventListener: EventListenerService) => {
     eventListener.listen("game:getPlayer", (playerId) => {
-        return gameContext.gameService.getPlayer(playerId);
+        return gameContext.liveRepository.getPlayer(playerId);
     });
 
     eventListener.listen('game:getStatus', (playerId, { gameCode }) => {

@@ -1,4 +1,4 @@
-import { Player } from "./player";
+import { LobbyPlayer, Player } from "./player";
 import { Duration, GameSettings, GameState } from "../../../../../shared/game";
 import { EventEmitterService } from "../../../ports/event_emitter";
 
@@ -33,16 +33,56 @@ export class Game {
         this.settings = settings;
     }
 
-    /** Update game state and notify listeners. */
+    /** Update game state and notify listeners */
     setState(newState: GameState) {
         this.state = newState;
         this.eventEmitter.emit('game:stateChange', this.code, newState);
     }
 
-    /** Update the countdown counter and notify listeners. */
+    /** Update the countdown counter and notify listeners */
     setCounter(newCounter: number) {
         this.counter = newCounter;
         this.eventEmitter.emit('game:counterChange', this.code, newCounter);
+    }
+
+    /** Add a player to the game and notify other players */
+    addPlayer(player: Player) {
+        this.players.add(player);
+        this.eventEmitter.emit('game:playerJoined', this.code, player);
+    }
+
+    /** Remove a player from the game and notify other players. Returns the removed player, or null */
+    removePlayer(playerId: string): Player | null {
+        const player = [...this.players].find(p => p.id === playerId);
+        if (!player) return null;
+
+        if (player instanceof LobbyPlayer && player.ready) {
+            this.playersReady -= 1;
+        }
+        this.players.delete(player);
+        this.eventEmitter.emit('game:playerQuit', this.code, player);
+        return player;
+    }
+
+    /** Mark a lobby player as ready and notify listeners. Returns true if state changed */
+    markPlayerReady(playerId: string): boolean {
+        const player = [...this.players].find(p => p.id === playerId);
+        if (!(player instanceof LobbyPlayer) || player.ready) return false;
+
+        player.ready = true;
+        this.playersReady += 1;
+        this.eventEmitter.emit('game:playerReadyChange', this.code, { playerId, newReadyState: true });
+        return true;
+    }
+
+    /** True when there are at least 2 players and all are ready */
+    allPlayersReady(): boolean {
+        return this.players.size > 1 && this.playersReady === this.players.size;
+    }
+
+    /** Notify listeners that this game is being destroyed. */
+    notifyDestroyed() {
+        this.eventEmitter.emit('game:destroy', this.code);
     }
 
     /** Called when the game transitions from 'starting' to 'active'. */
@@ -67,7 +107,7 @@ export class Game {
         }, 1000);
     }
 
-    /** Called when the game transitions to 'ending'. */
+    /** Called when the game transitions to 'ending' */
     onEnd() {
         this.endTime = new Date();
     }
