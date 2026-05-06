@@ -10,7 +10,7 @@ import { ClientToServerEvents, ServerToClientEvents } from '../../shared/events'
 import { ServiceProvider } from './contexts/services';
 
 // initialize dependencies
-const url = process.env.REACT_APP_API_URL ?? `${window.location.origin}/api`;
+const url = import.meta.env.VITE_API_URL ?? `${window.location.origin}/api`;
 const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(url);
 const eventHandler: EventHandler = initSocketIOEventHandler(socket);
 const api: IApi = initApi(eventHandler);
