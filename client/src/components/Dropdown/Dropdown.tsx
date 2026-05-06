@@ -28,7 +28,7 @@ type DropdownProps = {
  */
 const Dropdown = ({ label, breakLine = true, items, currItem, onChange = (item: DropdownElement) => {}, disabled = false, headerStyle = {}, labelStyle = {} }: DropdownProps) => {
     const [expanded, setExpanded] = useState(false);
-    const ref: RefObject<HTMLDivElement> = useRef(null);
+    const ref: RefObject<HTMLDivElement | null> = useRef<HTMLDivElement>(null);
 
     const id = useId();
 

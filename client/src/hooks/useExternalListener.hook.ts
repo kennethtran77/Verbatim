@@ -3,7 +3,7 @@ import { RefObject, useLayoutEffect } from "react";
 /**
  * A hook that calls a function when outside of the element is clicked.
  */
-const useExternalListener = (onClick: Function, ref: RefObject<HTMLElement>, active: boolean = true)=> {
+const useExternalListener = (onClick: Function, ref: RefObject<HTMLElement | null>, active: boolean = true) => {
     useLayoutEffect(() => {
         if (!active) {
             return;

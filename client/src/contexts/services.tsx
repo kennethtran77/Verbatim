@@ -1,9 +1,9 @@
-import { Context, createContext, FunctionComponent, useContext } from "react";
+import { Context, createContext, FunctionComponent, ReactNode, useContext } from "react";
 import IApi from "../api";
 
 export interface ServiceContextProps {
     getApi: () => IApi;
-    children?: JSX.Element
+    children?: ReactNode
 }
 
 const ServiceContext: Context<ServiceContextProps> = createContext<ServiceContextProps>({} as ServiceContextProps);
