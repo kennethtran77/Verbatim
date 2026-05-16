@@ -1,5 +1,4 @@
 import express, { Express } from 'express';
-import bodyParser from 'body-parser';
 import http from 'http';
 import { Server, Socket } from 'socket.io';
 import cors, { CorsOptions } from 'cors';
@@ -32,8 +31,8 @@ const corsOptions: CorsOptions = {
 };
 
 const app: Express = express();
-app.use(bodyParser.json({ limit: "30mb" }));
-app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
+app.use(express.json({ limit: "30mb" }));
+app.use(express.urlencoded({ limit: "30mb", extended: true }));
 app.use(cors(corsOptions));
 
 const server: http.Server = http.createServer(app);
