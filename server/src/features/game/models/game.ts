@@ -90,7 +90,7 @@ export class Game {
         this.startTime = new Date();
         this.setCounter(this.settings.duration.minutes * 60 + this.settings.duration.seconds);
 
-        const timer: NodeJS.Timer = setInterval(() => {
+        const timer: NodeJS.Timeout = setInterval(() => {
             if (this.state !== 'active') {
                 clearInterval(timer);
                 return;

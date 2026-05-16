@@ -113,7 +113,7 @@ const createLiveGameService = (
             game.setCounter(initialStartCounter);
             game.setState('starting');
 
-            const timer: NodeJS.Timer = setInterval(() => {
+            const timer: NodeJS.Timeout = setInterval(() => {
                 if (game.state !== 'starting') {
                     clearInterval(timer);
                     return;
