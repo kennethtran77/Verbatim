@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS game (
     duration INTEGER,
     game_state VARCHAR(20),
     start_time TIMESTAMP,
-    finish_date TIMESTAMP
+    end_time TIMESTAMP
 );
 
 -- one-to-one with game
