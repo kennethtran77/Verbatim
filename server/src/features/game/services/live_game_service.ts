@@ -1,6 +1,6 @@
 import { GameFactory } from "./game_factory";
 import { LiveGameRepository } from "./live_repository";
-import Response from "../../../../../shared/response";
+import Response from "@verbatim/shared/response";
 import { Tense } from "../models/tenses";
 import { Game, GameMode, Duration } from "../models/game";
 import { Player } from "../models/player";

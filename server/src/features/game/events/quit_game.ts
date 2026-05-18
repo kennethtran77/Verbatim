@@ -1,4 +1,4 @@
-import Response from "../../../../../shared/response";
+import Response from "@verbatim/shared/response";
 import { EventListenerService } from "../../../ports/event_listener";
 import { LiveGameService } from "../services/live_game_service";
 import { LiveGameRepository } from "../services/live_repository";

@@ -1,7 +1,7 @@
 import Button from "../../components/Button/Button";
 import LeaderboardCard from "../../components/LeaderboardCard/LeaderboardCard";
 import ArrowBack from "@mui/icons-material/ArrowBack";
-import { LeaderboardValue } from "../../../../shared/conjugation_race";
+import { LeaderboardValue } from "@verbatim/shared/conjugation_race";
 
 export interface GameEndPageProps {
     leaderboard: LeaderboardValue[];

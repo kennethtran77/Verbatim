@@ -1,7 +1,7 @@
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import Card from '../../../components/Card/Card';
 
-import { Subject, Verb } from '../../../../../shared/conjugation_race';
+import { Subject, Verb } from '@verbatim/shared/conjugation_race';
 
 import FemaleIcon from '@mui/icons-material/Female';
 import MaleIcon from '@mui/icons-material/Male';

@@ -2,7 +2,7 @@ import {
     ClientToServerEvents,
     ClientRequest,
     ClientRequestNoPayload,
-} from "../../../shared/events";
+} from "@verbatim/shared/events";
 
 /** A handler for a client-to-server event, scoped to the emitting player */
 export type EventListener<K extends keyof ClientToServerEvents> =

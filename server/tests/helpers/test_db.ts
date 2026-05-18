@@ -10,7 +10,7 @@ const TEST_DB_CONFIG = {
     database: "verbatim_test",
 };
 
-const INIT_SQL_PATH = join(__dirname, "../../src/init_db.sql");
+const INIT_SQL_PATH = join(__dirname, "../../../infra/init_db.sql");
 
 let pool: Pool | null = null;
 

@@ -1,5 +1,5 @@
-import { LeaderboardValue, Verb } from "../../../shared/conjugation_race";
-import Response from "../../../shared/response";
+import { LeaderboardValue, Verb } from "@verbatim/shared/conjugation_race";
+import Response from "@verbatim/shared/response";
 
 export interface ConjugationRaceIO {
     /** An event listener that notifies the player that the leaderboard has changed */

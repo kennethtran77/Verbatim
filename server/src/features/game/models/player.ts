@@ -1,4 +1,4 @@
-import { Player as PlayerShape, LobbyPlayer as LobbyPlayerShape } from "../../../../../shared/player";
+import { Player as PlayerShape, LobbyPlayer as LobbyPlayerShape } from "@verbatim/shared/player";
 
 // Classes exist so we can check types during runtime via instanceof
 export class Player implements PlayerShape {

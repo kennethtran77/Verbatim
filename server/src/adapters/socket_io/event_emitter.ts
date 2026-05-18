@@ -1,5 +1,5 @@
 import { Namespace } from "socket.io";
-import { ClientToServerEvents, ServerToClientEvents } from "../../../../shared/events";
+import { ClientToServerEvents, ServerToClientEvents } from "@verbatim/shared/events";
 import { EventEmitterService } from "../../ports/event_emitter";
 
 export const createSocketIOEventEmitter = (

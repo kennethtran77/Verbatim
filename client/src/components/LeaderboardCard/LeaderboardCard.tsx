@@ -1,6 +1,6 @@
 import Card from "../Card/Card";
 import LeaderboardIcon from '@mui/icons-material/Leaderboard';
-import { LeaderboardValue } from "../../../../shared/conjugation_race";
+import { LeaderboardValue } from "@verbatim/shared/conjugation_race";
 
 export type LeaderboardCardProps = {
     leaderboard: LeaderboardValue[];

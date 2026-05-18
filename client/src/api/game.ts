@@ -1,5 +1,5 @@
-import { GameConnectionData, GameState } from "../../../shared/game";
-import { Player } from "../../../shared/player";
+import { GameConnectionData, GameState } from "@verbatim/shared/game";
+import { Player } from "@verbatim/shared/player";
 import { ConjugationRaceIO } from "./conjugation_race";
 
 /** An object containing event listeners and emitters to process game state */

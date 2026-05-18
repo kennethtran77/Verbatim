@@ -1,5 +1,5 @@
 import { Game, GameMode, Duration, GameSettings } from "../models/game";
-import Response from "../../../../../shared/response";
+import Response from "@verbatim/shared/response";
 import { Tense } from "../models/tenses";
 import { ConjugationRaceGameFactory } from "../../conjugation-race/services/game_factory";
 import { GameCodeGeneratorService } from "./code_generator";

@@ -2,7 +2,7 @@ import express, { Express } from 'express';
 import http from 'http';
 import { Server, Socket } from 'socket.io';
 import cors, { CorsOptions } from 'cors';
-import { ClientToServerEvents, ServerToClientEvents } from '../../shared/events';
+import { ClientToServerEvents, ServerToClientEvents } from '@verbatim/shared/events';
 import dotenv from 'dotenv';
 import { Pool } from 'pg';
 import { createGameEvents, createGameContext, Repositories } from './features/game';
@@ -11,13 +11,14 @@ import createGameEventBinder from './features/game/controllers/socket';
 import createGameRouteBinder from './features/game/controllers/rest';
 import { createConjugationRaceEventBinder } from './features/conjugation-race/controllers/socket';
 import { createConjugationRaceRouteBinder } from './features/conjugation-race/controllers/rest';
-import { EventListenerService } from './ports/event_listener';
+import { EventBinder, EventListenerService } from './ports/event_listener';
 import { createSocketIOEventListener } from './adapters/socket_io/event_listener';
 import { createSocketIOEventEmitter } from './adapters/socket_io/event_emitter';
 import { createExpressRequestHandler } from './adapters/express/request_handler';
 import createMemLiveGameRepository from './features/game/services/live_repository';
 import createPostgresConjugationRaceRepository from './features/conjugation-race/adapters/postgres';
 import createPostgresGameRepository from './features/game/adapters/postgres';
+import { RequestHandlerService, RouteBinder } from './ports/request_handler';
 
 dotenv.config();
 
@@ -43,9 +44,9 @@ const io = new Server<ClientToServerEvents, ServerToClientEvents>(server, {
 
 // serve static react SPA on production
 if (env === 'prod') {
-    app.use(express.static('build'));
+    app.use(express.static('dist/public'));
     app.get('*', (req, res) => {
-        res.sendFile('index.html', { root: 'build' });
+        res.sendFile('index.html', { root: 'dist/public' });
     });
 }
 
@@ -83,18 +84,42 @@ gameNamespace.on('connection', (socket: Socket<ClientToServerEvents, ServerToCli
 
     const eventListener: EventListenerService = createSocketIOEventListener(socket);
 
-    const gameEvents = createGameEvents(eventListener, gameContext);
-    const conjugationRaceEvents = createConjugationRaceEvents(gameContext);
+    const gameEvents = createGameEvents(
+        eventListener,
+        gameContext
+    );
+    const conjugationRaceEvents = createConjugationRaceEvents(
+        gameContext
+    );
 
-    createGameEventBinder(gameContext, gameEvents)(eventListener);
-    createConjugationRaceEventBinder(conjugationRaceEvents)(eventListener);
+    let gameEventBinder: EventBinder = createGameEventBinder(
+        gameContext,
+        gameEvents
+    );
+    let conjugationRaceEventBinder: EventBinder = createConjugationRaceEventBinder(
+        conjugationRaceEvents
+    );
+
+    // Bind event handlers to events
+    gameEventBinder(eventListener);
+    conjugationRaceEventBinder(eventListener);
 });
 
 // REST: register routes on mounted routers
 const gameRouter = express.Router();
 app.use('/game', gameRouter);
-createGameRouteBinder(gameRepository)(createExpressRequestHandler(gameRouter));
+let gameRouteBinder: RouteBinder = createGameRouteBinder(gameRepository);
+let expressGameRequestHandler: RequestHandlerService = createExpressRequestHandler(gameRouter);
+// Bind express request handler to game routes
+gameRouteBinder(expressGameRequestHandler);
 
 const conjugationRaceRouter = express.Router();
 app.use('/conjugation', conjugationRaceRouter);
-createConjugationRaceRouteBinder(conjugationRaceRepository)(createExpressRequestHandler(conjugationRaceRouter));
+let conjugationRaceRouteBinder: RouteBinder = createConjugationRaceRouteBinder(
+    conjugationRaceRepository
+);
+let expressConjugationRaceRequestHandler: RequestHandlerService = createExpressRequestHandler(
+    conjugationRaceRouter
+);
+// Bind express request handler to game routes
+conjugationRaceRouteBinder(expressConjugationRaceRequestHandler);

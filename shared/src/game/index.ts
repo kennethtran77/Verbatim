@@ -1,5 +1,5 @@
-import { LobbyPlayer } from "./player";
-import { Tense } from "./tenses";
+import { LobbyPlayer } from "../player";
+import { Tense } from "../tenses";
 
 export type GameState = 'waiting' | 'starting' | 'active' | 'ending';
 

@@ -1,6 +1,6 @@
 import { Game } from "../models/game";
 import { LobbyPlayer, Player } from "../models/player";
-import Response from "../../../../../shared/response";
+import Response from "@verbatim/shared/response";
 import { LiveGameService } from "../services/live_game_service";
 import { LiveGameRepository } from "../services/live_repository";
 

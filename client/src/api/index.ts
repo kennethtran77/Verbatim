@@ -1,7 +1,7 @@
-import { Player } from "../../../shared/player";
+import { Player } from "@verbatim/shared/player";
 import { GameContext } from "./game";
-import Response from "../../../shared/response";
-import { Duration, GameState } from "../../../shared/game";
+import Response from "@verbatim/shared/response";
+import { Duration, GameState } from "@verbatim/shared/game";
 
 interface IApi {
     getPlayer(): Promise<Response<Player>>;

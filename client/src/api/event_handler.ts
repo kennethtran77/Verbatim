@@ -4,7 +4,7 @@ import {
     EmitParams,
     EmitResponse,
     ServerToClientEvents,
-} from "../../../shared/events";
+} from "@verbatim/shared/events";
 
 export interface EventHandler {
     /** Emits an event and returns the server's ack response */

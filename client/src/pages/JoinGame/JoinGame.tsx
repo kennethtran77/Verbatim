@@ -7,7 +7,7 @@ import Input from "../../components/Input/Input";
 import Button from "../../components/Button/Button";
 import { useCallback } from "react";
 import { useServices } from "../../contexts/services";
-import Response from "../../../../shared/response";
+import Response from "@verbatim/shared/response";
 import Modal from "../../components/Modal/Modal";
 import { useNavigate } from "react-router-dom";
 

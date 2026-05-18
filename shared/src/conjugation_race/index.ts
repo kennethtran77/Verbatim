@@ -1,4 +1,4 @@
-import { Tense } from "./tenses";
+import { Tense } from "../tenses";
 
 export interface LeaderboardValue {
     playerName: string;

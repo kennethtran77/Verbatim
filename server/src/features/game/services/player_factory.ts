@@ -1,6 +1,6 @@
 import { GameMode } from "../models/game";
 import { Player } from "../models/player";
-import Response from "../../../../../shared/response";
+import Response from "@verbatim/shared/response";
 import { LobbyPlayerFactory } from "./lobby_player_factory";
 import { ConjugationRacePlayerFactory } from "../../conjugation-race/services/player_factory";
 

@@ -1,0 +1,23 @@
+{
+  "name": "verbatim",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "shared",
+    "server",
+    "client"
+  ],
+  "scripts": {
+    "build:shared": "npm -w @verbatim/shared run build",
+    "dev:shared": "npm -w @verbatim/shared run dev",
+    "dev:server": "npm -w verbatim-server run dev",
+    "dev:client": "npm -w verbatim-client run dev",
+    "bundle": "npm -w verbatim-server run clean && npm -w @verbatim/shared run build && npm -w verbatim-server run build && npm -w verbatim-client run build && cp -r client/dist server/dist/public && rm -rf client/dist",
+    "db:dev:up": "docker compose -f infra/docker-compose.dev.yml up -d",
+    "db:dev:down": "docker compose -f infra/docker-compose.dev.yml down",
+    "db:dev:reset": "docker compose -f infra/docker-compose.dev.yml down -v && npm run db:dev:up",
+    "db:test:up": "docker compose -f infra/docker-compose.test.yml up -d --wait",
+    "db:test:down": "docker compose -f infra/docker-compose.test.yml down -v",
+    "db:test:reset": "npm -w verbatim-server run db:test:reset"
+  }
+}

@@ -1,1 +1,1 @@
-export { Tense, TenseValue, tenseNames, tenses } from "../../../../../shared/tenses";
+export { Tense, TenseValue, tenseNames, tenses } from "@verbatim/shared/tenses";

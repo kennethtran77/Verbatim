@@ -2,7 +2,7 @@ import { ConjugationRaceGame, Verb } from "../models/conjugation_race";
 import { Game } from "../../game/models/game";
 import { Player } from "../../game/models/player";
 import { ConjugationRacePlayer } from "../models/player";
-import Response from "../../../../../shared/response";
+import Response from "@verbatim/shared/response";
 import { LiveGameRepository } from "../../game/services/live_repository";
 
 export type SubmitAnswerEvent = (playerId: string, answer: string) => Response<Verb>;

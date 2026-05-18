@@ -5,7 +5,7 @@ import IApi from './api';
 import initApi from './api/api';
 import { EventHandler, initSocketIOEventHandler } from './api/event_handler';
 import App from './App';
-import { ClientToServerEvents, ServerToClientEvents } from '../../shared/events';
+import { ClientToServerEvents, ServerToClientEvents } from '@verbatim/shared/events';
 
 import { ServiceProvider } from './contexts/services';
 

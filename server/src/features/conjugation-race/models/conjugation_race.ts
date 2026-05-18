@@ -1,13 +1,13 @@
 import { Game } from "../../game/models/game";
-import { GameSettings } from "../../../../../shared/game";
+import { GameSettings } from "@verbatim/shared/game";
 import { Player } from "../../game/models/player";
 import { ConjugationRacePlayer } from "./player";
-import { LeaderboardValue, Verb, VerbResponse } from "../../../../../shared/conjugation_race";
+import { LeaderboardValue, Verb, VerbResponse } from "@verbatim/shared/conjugation_race";
 import { EventEmitterService } from "../../../ports/event_emitter";
 import { VerbService } from "../services/verb_service";
 import { ConjugationRaceRepository } from "../ports/repository";
 
-export { LeaderboardValue, Verb, VerbResponse, Subject } from "../../../../../shared/conjugation_race";
+export { LeaderboardValue, Verb, VerbResponse, Subject } from "@verbatim/shared/conjugation_race";
 
 export class ConjugationRaceGame extends Game {
     /** A list of players sorted by verbs most correctly answered. */

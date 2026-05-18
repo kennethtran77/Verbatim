@@ -1,5 +1,5 @@
 import { Duration, Game } from "../models/game";
-import Response from "../../../../../shared/response";
+import Response from "@verbatim/shared/response";
 import { LiveGameService } from "../services/live_game_service";
 import { TenseStore } from "../services/tense_store";
 

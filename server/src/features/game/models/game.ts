@@ -1,8 +1,8 @@
 import { LobbyPlayer, Player } from "./player";
-import { Duration, GameSettings, GameState } from "../../../../../shared/game";
+import { Duration, GameSettings, GameState } from "@verbatim/shared/game";
 import { EventEmitterService } from "../../../ports/event_emitter";
 
-export { GameState, GameConnectionData, GameSettings, Duration, gameModes, GameMode } from "../../../../../shared/game";
+export { GameState, GameConnectionData, GameSettings, Duration, gameModes, GameMode } from "@verbatim/shared/game";
 
 export class GameData {
     code: string;

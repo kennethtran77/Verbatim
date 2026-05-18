@@ -1,5 +1,5 @@
 import { GameState } from "../models/game";
-import Response from "../../../../../shared/response";
+import Response from "@verbatim/shared/response";
 import { LiveGameRepository } from "../services/live_repository";
 
 export type GetGameStatusEvent = (gameCode: string) => Response<GameState>;

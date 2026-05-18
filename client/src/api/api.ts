@@ -1,6 +1,6 @@
 import IApi from './index';
 
-import { Duration } from '../../../shared/game';
+import { Duration } from '@verbatim/shared/game';
 import { EventHandler } from './event_handler';
 
 const initApi = (eventHandler: EventHandler): IApi => {

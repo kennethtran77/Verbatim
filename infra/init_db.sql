@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS conjugation_race_game (
 
 -- many-to-one with game
 CREATE TABLE IF NOT EXISTS tense (
-    tense VARCHAR(20),
+    tense VARCHAR(32),
     game_code VARCHAR(20),
     PRIMARY KEY (tense, game_code),
     FOREIGN KEY (game_code) REFERENCES game(code)
@@ -25,9 +25,9 @@ CREATE TABLE IF NOT EXISTS tense (
 -- many-to-one with conjugation_race_game
 CREATE TABLE IF NOT EXISTS verb (
     id INTEGER,
-    infinitive VARCHAR(20),
-    tense VARCHAR(20),
-    subject VARCHAR(20),
+    infinitive TEXT,
+    tense VARCHAR(32),
+    subject VARCHAR(10),
     pronominal BOOLEAN,
     game_code VARCHAR(20),
     PRIMARY KEY (id, game_code),
@@ -35,8 +35,8 @@ CREATE TABLE IF NOT EXISTS verb (
 );
 
 CREATE TABLE IF NOT EXISTS conjugation_race_player (
-    id VARCHAR(20),
-    username VARCHAR(20),
+    id TEXT,
+    username TEXT,
     verbs_seen INTEGER CHECK (verbs_seen >= 0),
     game_code VARCHAR(20),
     PRIMARY KEY (id, game_code),
@@ -45,11 +45,11 @@ CREATE TABLE IF NOT EXISTS conjugation_race_player (
 
 -- many-to-one with conjugation_race_player
 CREATE TABLE IF NOT EXISTS verb_response (
-    player_id VARCHAR(20),
+    player_id TEXT,
     game_code VARCHAR(20),
     verb_id INTEGER,
-    input VARCHAR(20),
-    correct_answer VARCHAR(20),
+    input TEXT,
+    correct_answer TEXT,
     is_input_correct BOOLEAN,
     answer_time TIMESTAMP,
     PRIMARY KEY (player_id, game_code, verb_id),

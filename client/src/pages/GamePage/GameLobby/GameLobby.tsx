@@ -9,10 +9,10 @@ import InfoIcon from '@mui/icons-material/Info';
 import Button from "../../../components/Button/Button";
 
 import styles from './GameLobby.module.css';
-import { LobbyPlayer } from "../../../../../shared/player";
+import { LobbyPlayer } from "@verbatim/shared/player";
 import { GameLobbyIO } from "../../../api/game";
 import { useEffect, useState } from "react";
-import { GameSettings, GameState } from "../../../../../shared/game";
+import { GameSettings, GameState } from "@verbatim/shared/game";
 import Modal from "../../../components/Modal/Modal";
 
 type GameLobbyProps = {

@@ -1,4 +1,4 @@
-import { ServerToClientEvents } from "../../../shared/events";
+import { ServerToClientEvents } from "@verbatim/shared/events";
 
 /** Emits an event with data to all players in a game */
 export interface EventEmitterService {

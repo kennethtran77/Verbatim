@@ -1,6 +1,6 @@
 import { Socket } from "socket.io";
 import { EventEmitter } from "events";
-import { Ack, ClientPayload, ClientToServerEvents, EmitResponse } from "../../../../shared/events";
+import { Ack, ClientPayload, ClientToServerEvents, EmitResponse } from "@verbatim/shared/events";
 import { EventListener, EventListenerService } from "../../ports/event_listener";
 
 /** Uses the Socket IO implementation for handling bi-directional events */
